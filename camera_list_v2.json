@@ -1,0 +1,1312 @@
+{
+    "Chakdoh": {
+        "PP-16": {
+            "OB FB AREA 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.147:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+            },
+            "OB FB AREA 2": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.148:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+            },
+            "KP MACHINE 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.150:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+            },
+            "KP MACHINE 2": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.151:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "PACKING": {
+                "streamLink": "rtsp://admin:admin@10.0.35.203:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "PACKING - 2": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.149:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "AN MIXING": {
+                "streamLink": "rtsp://admin:admin@10.0.35.206:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit", "no_helmet"]
+            }
+        },
+        "GB": {
+            "VIBRO MILL GF": {
+                "streamLink": "rtsp://admin:admin@10.0.28.74:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_helmet"]
+            },
+            "REACTOR FIRST FLOOR": {
+                "streamLink": "rtsp://admin:admin@10.0.28.75:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_helmet"]
+            },
+            "GROUND FLOOR": {
+                "streamLink": "rtsp://admin:admin@10.0.28.76:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_helmet"]
+            }
+        },
+        "PP-01": {
+            "BOX FILLING": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.150:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]
+            },
+            "BOX STRAPPING": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.151:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "KP MACHINE": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.152:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+            },
+            "DYNAMIC MIXER": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.153:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            }
+            
+        },
+        "PP-03": {
+            "CARTRIDGE LOADING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.34.4:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+            },
+            "PACKING & STRAPPING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.34.6:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "DFM AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.34.8:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "KP MACHINE AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.34.11:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+            },
+            "OB AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.34.107:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit","no_helmet"]
+            }
+        },
+        "PP-11": {
+            "KP MACHINE AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.15.136:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "STRAPPING & PACKING AREA 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.15.137:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+            },
+            "STRAPPING & PACKING AREA 2": {
+                "streamLink": "rtsp://admin:admin123@10.0.15.138:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+            },
+            "STRAPPING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.15.139:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "AN MIXING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.15.140:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            }
+            
+        },
+        "PP-04": {
+            "KP OPERATOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.184:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            
+            "KP MACHINE": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.184:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "MIXING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.2.97:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit", "no_helmet"]
+            }
+            
+        },
+        "PP-05": {
+            "AN MIXING AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.65.109:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit", "no_mask"]
+            },
+            "KP MACHINE AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.65.112:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "KP MACHINE AREA 2": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.65.113:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "FILLING & STRAPPING AREA 1": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.65.101:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "FILLING & STRAPPING AREA 2": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.65.114:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "MIXING AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.65.103:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit", "no_helmet"]
+            },
+            "FB AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.65.105:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit", "no_helmet"]
+            }
+            
+        },
+        "PP-09": {
+            "KP MACHINE 1 AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.90:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "BOX FILLING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.91:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_suit"]
+            },
+            "KP MACHINE 2 AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.92:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "STRAPPING AREA 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.93:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "CARTRIADGE FILLING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.94:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+            },
+            "FB AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.2.123:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit", "no_helmet"]
+            }
+            
+        },
+        "PP-12": {
+            "CARTRIADGE FILLING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.166:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "KP MACHINE 2 AREA 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.167:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "KP MACHINE 2 AREA 2": {
+                "streamLink": "rtsp://admin:admin123@10.0.34.63:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "OB AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.168:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_mask", "no_shoes", "no_goggles", "no_suit", "no_helmet"]
+            },
+            "KP MACHINE 1 AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.34.64:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            },
+            "AN MIXING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.170:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit", "no_helmet"]
+            },
+            "PACKING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.2.162:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_suit"]
+            }
+        
+        },
+        "PP-20":{
+            "NITRATOR-1-3": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.181:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATOR-3-6": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.182:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },  
+            "NITRATION AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.187:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATOR BACKSIDE AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.188:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "WASHER-1-2": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.183:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "WASHER-3-5": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.185:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },  
+            "WASHER AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.184:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "WASHER-NITRATOR AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.186:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "FBD-AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.189:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "PACKING-AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.190:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },  
+            "PACKING-AREA-2": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.191:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "WNA-TANKFARM": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.199:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "TANKFARM-CNA-WNA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.206:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "WSA-INT-AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.213:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },  
+            "TANKFARM-AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.216:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "DN-3rd-FLOOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.201:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },   
+            "DN-2nd-FLOOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.203:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "DN-4th-FLOOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.204:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },  
+            "DN-VACCUM": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.205:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "DN-3rd-FLOOR-2": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.208:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "MEEP-TOP-FLOOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.210:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "MEEP-GROUND-FLOOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.211:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },  
+            "MEEP-2nd-FLOOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.214:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SCRUBBER-AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.215:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SELLITE -PREP-AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.207:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "PREP-TANK-GF": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.218:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },  
+            "NIT-BACKSIDE-PASSAGE": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.193:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NIT-LABLYNTH-PASSAGE": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.194:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "PAC-LABLYNTH-PASSAGE": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.195:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NIT-FRONTSIDE-PASSAGE": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.197:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+                },  
+            "CR-FRONTSIDE-PASSAGE": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.198:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+                },
+            "ETP-PASSAGE": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.209:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "PAC-FRONTSIDE-PASSAGE": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.196:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "UTILITY-1(CHILLER AREA)": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.217:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit", "no_helmet"]
+                },  
+            "UTILITY-1": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.202:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit", "no_helmet"]
+                },
+            "PROCESS-WATER-AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.47.212:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit", "no_helmet"]
+                }},         
+
+        "PP-18": {
+            "DENITRATION 1": {
+                "streamLink": "rtsp://admin:admin@10.0.28.16:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "DENITRATION 2": {
+                "streamLink": "rtsp://admin:admin@10.0.28.17:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "DENITRATION 3": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.14:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "ONT TANKER AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.19:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "DENITRATION 4": {
+                "streamLink": "rtsp://admin:admin@10.0.28.23:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "TANK FORM AREA 2": {
+                "streamLink": "rtsp://admin:admin@10.0.28.20:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "DENITRATION FIRST FLOOR": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.22:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "PACKING AREA 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.24:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "PACKING AREA 2": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.25:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "NITRATION 1": {
+                "streamLink": "rtsp://admin:admin@10.0.28.28:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "NITRATOR 1,2,3": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.29:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "NITRATION 3": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.30:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "NITRATION 4": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.31:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "WASHER 1,2,3": {
+                "streamLink": "rtsp://admin:admin@10.0.28.32:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "NITRATOR 4,5,6": {
+                "streamLink": "rtsp://admin:admin@10.0.28.33:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "WASHER 4,5,6": {
+                "streamLink": "rtsp://admin:admin@10.0.28.34:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "EVAPORATION RP": {
+                "streamLink": "rtsp://admin:admin@10.0.28.110:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "EVAPORATION AND DISTILLATION 3": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.113:554/cam/realmonitor?channel=1&subtype=0&authbasic=[BASE64_admin_admin]",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                }
+            },
+        "PP-21":{
+            "UTILITY AREA 1": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.58:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "UTILITY AREA 2": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.34:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "UTILITY AREA FRONT SIDE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.42:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION AREA 1": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.22:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION AREA 2": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.23:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION AREA 3": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.24:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION AREA 4": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.25:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION AREA 5": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.26:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATOR AND WASHER": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.27:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION AREA 7": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.28:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION ROOM BACKSIDE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.47:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "NITRATION AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.51:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SELLITE PREP AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.30:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "FD FAN BLOWER": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.32:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "CHILLER TANK": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.33:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "FBD-AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.20:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "PACKING-AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.21:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },  
+            "PACKING-ROOM-FRONT-SIDE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.48:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "PACKING-ROOM-BACK-SIDE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.49:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "FRONT-SIDE-PASSAGE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.52:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "BACK-SIDE-PASSAGE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.50:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                },
+            "WNA-STORAGE-TANK": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.43:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "TANKFORM-AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.46:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SPENT-STORAGE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.44:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "DN-3rd-FLOOR": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.41:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },   
+            "DN-1st-FLOOR": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.37:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "DN-2nd-FLOOR": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.39:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "DN-4th-FLOOR 1": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.36:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },  
+            "DN-4th-FLOOR 2": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.40:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "DN-GROUND-FLOOR": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.38:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SCRUBBER-AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.29:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SCRUBBER-AREA-FRONT-SIDE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.55:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SCRUBBER-AREA-BACK-SIDE": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.45:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "SELLITE-PREP-AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.35:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "PROCESS-WATER-AREA": {
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.64.31:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit", "no_helmet"]
+                }}, 
+
+        "PP-19":{ 
+            "B-5 B-6":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.85:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "A-11":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.86:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "A-5 A-6":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.87:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "A-7 A-8":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.88:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "A-3 A-4":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.89:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "A-9 A-10":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.98:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                }
+            },
+
+
+        "PP-15":
+            {
+            "NITRATOR FLUSHING": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.61:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "NITRATOR MANUAL TIGHTNING": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.64:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "PRESSURE FILTER CAKE DRY/TRANSFER 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.66:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove"]
+                },
+            
+            "PRESSURE FILTER CAKE DRY/TRANSFER 3": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.65:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_goggles"]
+                },
+            "CRYSTALLIZER CHARGING": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.62:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles","no_mask"]
+                },
+            "NUTCHE FILTER UNLOADING CLEANING": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.55:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "SETTLER EVAPORATOR NUTCHE FILTER BOTTOM AND FLEXIBLE PIPE CONNECTION": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.71:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "SOLUTION PREPARATION M1": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.58:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "M2 AND MIXING AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.57:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "NUTCHE FILTER": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.60:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "REACTOR AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.220:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles","no_mask"]
+                },
+            "REACTOR UPWARD AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.221:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "AMMONIA TANKER UNLOADING": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.222:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "FILTER AREA": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.223:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "TANKER UNLOADING": {
+                "streamLink": "rtsp://admin:admin123@10.0.35.224:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "EVAPORATOR FEED VIEW GLASS": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.68:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                },
+            "CRYST VACCUM PUMP": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.69:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"]
+                }
+        },
+        "PD-01":{ 
+            "SEIVING AREA":{
+                "streamLink": "rtsp://admin:admin@10.0.6.104:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_cap","no_suit"]
+                    }},
+        "PD-02":{ 
+            "SEIVING AREA":{
+                "streamLink": "rtsp://admin:admin@10.0.6.145:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_cap","no_suit"]
+                    }},
+        "PD-03":{ 
+            "SEIVING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.114:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_cap","no_suit"]
+                    }},
+        "PD-04":{ 
+            "SEIVING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.2.66:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_cap","no_suit"]
+                    }},
+        "PD-05":{ 
+            "SEIVING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.51:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_cap","no_suit"]
+                    }},
+        "PD-06":{ 
+            "SEIVING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.223:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_cap","no_suit"]
+                    }},
+        "PD-07":{ 
+            "SEIVING":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.155:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_helmet","no_suit"]
+                    }},
+        "PD-08":{ 
+            "SEIVING":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.30:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_helmet","no_suit"]
+                    }},
+        "HRCPCH-01":{ 
+            "IOT- FILLING & MIXING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.6.108:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_suit"]
+                    },
+            "CLEANING & PACKING OF SHELL AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.6.109:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                }},
+        "CBH3":{ 
+            "CASTBOOSTER1":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.225:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_suit"]
+                    },
+            "CASTBOOSTER2":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.226:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+                }},
+        "CBH4":{
+            "CLEANING & PACKING OF SHELL": {
+                "streamLink": "rtsp://admin:admin@10.0.2.38:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]          
+                },
+            "SHELL POLISH":{
+                "streamLink": "rtsp://admin:admin@10.0.2.39:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "MIXING & FILLING":{
+                "streamLink": "rtsp://admin:admin@10.0.2.40:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "TNT & PETN ROOM": {
+                "streamLink": "rtsp://admin:admin@10.0.2.41:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]
+            }
+            },
+        "CBH5":{
+            "COOLING TUNNEL":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.99:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "CB WEIGHING & PACKING":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.102:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                }
+            },
+        "CBH6":{
+            "MIXING & FILLING": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.182:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]          
+                },
+            "CLEANING OF SHELL":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.181:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "PACKING & STRAPPING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.179:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                }
+            },
+        "CBH7":{
+            "MIXING & FILLING": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.189:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"]          
+                },
+            "PACKING & STRAPPING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.190:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "PACKING OF SHELL":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.191:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "CLEANING OF SHELL": {
+                "streamLink": "rtsp://admin:admin123@10.0.13.192:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                }
+            },                  
+        "SMO":{
+            "SMO PIBSA TANKER AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.155:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]     
+                },
+            "SMO PIBSA TANK 1 AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.156:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet"] 
+                },
+            "SMO PIBSA TANK 2 AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.157:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask"] 
+                },
+            "SMO PIBSA TANK 2 AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.158:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet"] 
+                }},
+        "DISTILLATION": {
+            "DC COLUMN": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.194:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no-suit", "no_helmet"]
+                },
+            "DC CONDENSER": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.195:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no-suit", "no_helmet"]
+                },
+            "DC COLUMN GROUND FLOOR 1": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.197:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no-suit", "no_helmet"]
+                },
+            "DC COLUMN GROUND FLOOR 2": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.198:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no-suit", "no_helmet"]
+                },
+            "DC CONDENSER WATER FLOW OUTLET": {
+                "streamLink": "rtsp://admin:admin123@10.0.28.199:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no-suit", "no_helmet"]
+                }},
+
+        "DF01":{
+            "SPINNING AREA 1 (LEFT)":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.36:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                },
+            "COATING AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.37:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "COATING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.38:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "CRUSHING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.39:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "REELING AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.140:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "SPINNING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.42:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                },
+            "SPINNING AREA 3":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.47:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                    }, 
+            "SPINNING AREA 1 (RIGHT)":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.45:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                    },                       
+            "REELING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.43:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                }},
+        "DF02":{
+            "COATING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.17:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                },
+            "SPINNING AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.52:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "CRUSHING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.53:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "SPINNING AREA2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.63:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "COATING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.64:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "REELING AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.69:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes"]     
+                },
+            "REELING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.70:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes"]
+                },
+            "SPINNING AREA 9-10":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.113:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                    }, 
+            "SPINNING AREA 7-6":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.114:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                    },                       
+            "SPINNING AREA 8-9":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.115:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                },
+            "SPINNING AREA 1-2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.137:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                    },                       
+            "SPINNING AREA 4-5":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.138:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                }},
+        "DF03":{
+            "SPINNING AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.35:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                },
+            "SPINNING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.36:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "SPINNING AREA 11-12":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.37:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "SPINNING AREA 6":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.40:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]     
+                },
+            "REELING AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.44:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes"]     
+                },
+            "REELING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.178:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes"]
+                },
+            "REELING AREA 3":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.176:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes"]
+                },
+            "COATING 01":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.41:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                    }, 
+            "COATING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.42:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                    },                       
+            "SPINNING AREA 9":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.43:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+                },
+            "SPINNING 05":{
+                "streamLink": "rtsp://admin:admin123@10.0.28.39:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"]
+            }
+            },
+        "PP-10":{
+            "NITRATION FF AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.2.157:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet"]
+                },
+            "GRANULATION AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.2.155:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet"]     
+                },
+            "PACKING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.2.28:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_suit", "no_mask"]     
+                }},
+        "PP-14":{
+            "NITRATION & GRANULATION AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.2.197:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]
+                },
+            "NITRATION & GRANULATION AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.2.201:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]     
+                }
+            },
+        "COB":{
+            "OB AREA 1 CAM 1":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.157:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]
+                },
+            "OB AREA 1 CAM 2":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.12:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]     
+                },
+            "OB AREA 1 CAM 3":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.6:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]     
+                },
+            "TANKER UNLOADING(H) AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.4:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]     
+                },
+            "TANKER UNLOADING(V) AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.5:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]     
+                },
+            "AN MELT UNLOADING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.6:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]     
+                },
+            "TANK AREA":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.11:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]
+                },
+            "AN UNLOADING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.9:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]
+                }, 
+            "AN CRUSHING AREA 1":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.148:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]
+                },
+            "AN CRUSHING AREA 2":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.150:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]
+                },
+            "AN CRUSHING AREA 3":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.153:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask",   "no_helmet", "no_suit"]
+                }},
+        "BULK":{
+            "BMD LOADING AREA":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.145:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]
+                },
+            "MATRIX HOPPER AREA":{
+                "streamLink": "rtsp://iot:Toshiba%40123@10.0.7.151:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"]     
+                }},
+        "SL-03":{
+            "CUBICAL AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.148:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": [ "no_goggles", "no_mask", "no_suit", "no_glove", "no_shoes"]
+                }},
+        "SL-04":{
+            "ASA MIXING TABLE AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.203:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+                },
+            "CUBICAL AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.204:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": [ "no_goggles", "no_mask", "no_suit", "no_glove", "no_shoes"]
+                },
+            "ASA MIXING TABLE AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.205:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_suit"]
+                },
+            "CUBICAL AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.206:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": [ "no_goggles", "no_mask", "no_suit", "no_glove", "no_shoes"]
+                }},
+        "SL-05":{
+            "ASA MIXING TABLE AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.43:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_mask", "no_suit", "no_glove"]
+                },
+            "CUBICAL AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.44:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": [ "no_goggles", "no_mask", "no_suit", "no_glove", "no_shoes"]
+                },
+            "ASA MIXING TABLE AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.48:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles", "no_mask", "no_suit", "no_glove"]
+                },
+            "CUBICAL AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.47:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": [ "no_goggles", "no_mask", "no_suit", "no_glove", "no_shoes"]
+                }},
+        "SN-01":{
+            "LINE_1 SPOOL AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.182:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]
+                },
+            "FIRST FLOOR ROOM_1":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.183:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]     
+                },
+            "FIRST FLOOR ROOM_2":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.184:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]    
+                },
+            "GROUND FLOOR AREA_1":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.185:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]     
+                },
+            "GROUND FLOOR AREA_2":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.186:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]     
+                },
+            "PRIMARY AREA LINE_1":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.191:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]
+                },
+            "PRIMARY AREA LINE_2":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.194:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles"]
+                }, 
+            "TAKE UP SPOOL AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.249:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_shield"]
+                }},
+        "SN-02":{
+            "WATER OVEN ROOM 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.236:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "MIXING ROOM 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.237:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "WATER OVEN ROOM 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.239:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "MIXING ROOM 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.240:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "PLANT CUP STRAY":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.242:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                },
+            "HMX ROOM":{
+                "streamLink": "rtsp://admin:admin123@10.0.34.243:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit"] 
+                }}, 
+        "SN-03":{
+            "SHOCKTUBE CUTTING AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.125:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.126:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 3":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.127:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 4":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.128:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 5":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.129:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 6":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.130:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 7":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.131:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 8":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.132:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 9":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.133:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                },
+            "SHOCKTUBE CUTTING AREA 10":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.134:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_shoes", "no_goggles"] 
+                }},
+        "PP-06":{
+            "LI. AMMONIA TANKER UNLOADING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.19:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                },
+            "UTILITY AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.20:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "MOVEMENT OF MATERIAL AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.54:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "FLOOR CLEANING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.61:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "LABYRINTH CLEANING AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.7.18:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "EVAPORATOR FF AREA":{
+                "streamLink": "rtsp://admin:admin@10.0.7.25:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                },
+            "VESSEL ROOM FF AREA":{
+                "streamLink": "rtsp://admin:admin@10.0.7.27:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                }, 
+            "FINE HMX FF AREA":{
+                "streamLink": "rtsp://admin:admin@10.0.7.28:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                },
+            "FINE HMX WASHING ROOM":{
+                "streamLink": "rtsp://admin:admin@10.0.7.29:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                },
+            "EVAPORATOR NUTCH FILTER AREA":{
+                "streamLink": "rtsp://admin:admin@10.0.7.30:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                }, 
+            "VESSEL ROOM GF":{
+                "streamLink": "rtsp://admin:admin@10.0.7.31:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                }},
+        "MEEP":{
+            "CONCENTRATE TANK AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.126:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                },
+            "CONCENTRATE TANK AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.17:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "HCL CANS AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.128:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "CALENDRIA AREA 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.129:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "CALENDRIA AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.18:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]     
+                },
+            "RAW WATER TANK AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.130:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                }, 
+            "MEEP SECOND FLOOR AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.19:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                },
+            "CIP TANK AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.13.127:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask","no_helmet"]
+                }}, 
+        "GB-02":{
+            "VIBRO MILL GF AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.124:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "GRANULATION GF AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.209:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "DM WATER TANK AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.244:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "TANK FORM AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.245:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "VIEW GLASS AREA 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.249:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "EXPLOSIVE STORAGE GF AREA":{
+                "streamLink": "rtsp://admin:admin123@10.0.35.189:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                }},
+        "GB-03":{
+            "VIBRO MILL 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.47.122:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "VIBRO MILL 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.47.127:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "GRANULATION GF 1":{
+                "streamLink": "rtsp://admin:admin123@10.0.47.125:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "GRANULATION GF 2":{
+                "streamLink": "rtsp://admin:admin123@10.0.47.124:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "GRANULATION GF 3":{
+                "streamLink": "rtsp://admin:admin123@10.0.47.138:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                },
+            "EXPLOSIVE STORAGE GF":{
+                "streamLink": "rtsp://admin:admin123@10.0.47.133:554/cam/realmonitor?channel=1&subtype=0",
+                "ppeList": ["no_glove", "no_shoes", "no_goggles", "no_mask", "no_suit", "no_helmet"] 
+                }
+        }
+    }
+}

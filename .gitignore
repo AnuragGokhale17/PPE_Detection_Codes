@@ -1,0 +1,29 @@
+# Environment variables & secrets
+.env
+.env.local
+.env.*.local
+
+# Large Model Weights (>100MB exceeds GitHub limit)
+*.pt
+*.pth
+*.onnx
+*.weights
+model/*.pt
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

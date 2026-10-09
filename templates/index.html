@@ -1,0 +1,2447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Safety — PPE Monitoring | Solar Industries India Limited</title>
+
+    <link rel="icon" type="image/png" href="/static/solars.png">
+    
+    <!-- Google Fonts: Montserrat (Weights 400, 500, 700 ONLY per Smart Factory standard) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Vendor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           Solar Group Smart Factory — Design Tokens & Foundations (SKILL.md)
+           ========================================================================== */
+        :root {
+            /* Surfaces & Viewport */
+            --canvas: #f3f4f5;
+            --surface: #ffffff;
+            --surface-2: #fafbfb;
+            --surface-3: #f1f2f4;
+            --surface-sunken: #eef0f2;
+            
+            /* Typography & Neutrals */
+            --ink: #212529;
+            --ink-2: #464c53;
+            --ink-3: #707070;
+            --line: #e6e8ea;
+            
+            /* Solar Red Identity (Strictly: 2px cap rule, eyebrow tick, 1 max primary CTA) */
+            --brand-500: #ed1c24;
+            --brand-600: #d31017;
+            --shadow-brand: 0 4px 14px rgba(237, 28, 36, 0.25);
+            
+            /* Trust Blue (All Wayfinding: active tabs, focus rings, links, info pills) */
+            --accent-50: #f0f7fc;
+            --accent-100: #e0f0f9;
+            --accent-200: #c7e0f3; /* Powder blue highlight */
+            --accent-600: #1f3f80; /* Wayfinding active */
+            --accent-700: #1a2d5e; /* Active text/icons */
+            
+            /* Default Data Visualization Mark */
+            --data: #4a5157;
+            
+            /* Semantic Status & Life-Safety */
+            --ok: #0a6c40;
+            --ok-surface: #eefaf3;
+            --ok-line: #a8e6c4;
+            --warn: #a85908;
+            --warn-surface: #fff9ec;
+            --warn-line: #fbdd9a;
+            --critical: #b42318;
+            --critical-surface: #fdf3f2;
+            --critical-line: #f6cac6;
+            
+            /* Smart Safety Pillar */
+            --p-saf: #2f8f4e;
+            
+            /* Metrics & Geometry */
+            --sidebar-width: 300px;
+            --r-sm: 6px;
+            --r-md: 8px;
+            --r-lg: 12px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-ink: 0 4px 12px rgba(33, 37, 41, 0.2);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--canvas);
+            background-image: 
+                linear-gradient(to right, rgba(33, 37, 41, 0.028) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(33, 37, 41, 0.028) 1px, transparent 1px);
+            background-size: 22px 22px;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--ink);
+            overflow-x: hidden;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Tabular figures for non-jittering industrial metric updates */
+        .tabular {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ==========================================================================
+           Surfaces & Panels (Smart Factory Component Blueprints)
+           ========================================================================== */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .panel:hover {
+            box-shadow: var(--shadow-md);
+            border-color: #d1d5db;
+        }
+
+        /* Signature 2px Solar Red Top Cap (The Core Identity Mark) */
+        .panel-brand {
+            border-top: 2px solid var(--brand-500) !important;
+        }
+
+        .well {
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: var(--r-md);
+            padding: 16px;
+        }
+
+        /* Eyebrows & Ruleheads */
+        .eyebrow {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--ink-3);
+            margin-bottom: 4px;
+        }
+
+        .eyebrow-accent {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent-700);
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .eyebrow-accent::before {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 2px;
+            background: var(--brand-500);
+            margin-right: 8px;
+            border-radius: 1px;
+        }
+
+        /* Status Pills */
+        .pill-ok {
+            background: var(--ok-surface);
+            color: var(--ok);
+            border: 1px solid var(--ok-line);
+            border-radius: var(--r-sm);
+            padding: 3px 8px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pill-warn {
+            background: var(--warn-surface);
+            color: var(--warn);
+            border: 1px solid var(--warn-line);
+            border-radius: var(--r-sm);
+            padding: 3px 8px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pill-critical {
+            background: var(--critical-surface);
+            color: var(--critical);
+            border: 1px solid var(--critical-line);
+            border-radius: var(--r-sm);
+            padding: 3px 8px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pill-info {
+            background: var(--accent-50);
+            color: var(--accent-700);
+            border: 1px solid var(--accent-200);
+            border-radius: var(--r-sm);
+            padding: 3px 8px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Metric Card Icon Anchors */
+        .metric-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--r-md);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .metric-icon-box.brand {
+            background: rgba(237, 28, 36, 0.08);
+            color: var(--brand-500);
+            border: 1px solid rgba(237, 28, 36, 0.15);
+        }
+
+        .metric-icon-box.primary {
+            background: var(--accent-50);
+            color: var(--accent-600);
+            border: 1px solid var(--accent-200);
+        }
+
+        .metric-icon-box.warning {
+            background: var(--warn-surface);
+            color: var(--warn);
+            border: 1px solid var(--warn-line);
+        }
+
+        .metric-icon-box.critical {
+            background: var(--critical-surface);
+            color: var(--critical);
+            border: 1px solid var(--critical-line);
+        }
+
+        .metric-icon-box.success {
+            background: var(--ok-surface);
+            color: var(--ok);
+            border: 1px solid var(--ok-line);
+        }
+
+        /* Telemetry Live Pulsing Dot */
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--ok);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(10, 108, 64, 0.4);
+            animation: pulse-live 2s infinite;
+        }
+
+        @keyframes pulse-live {
+            0% { box-shadow: 0 0 0 0 rgba(10, 108, 64, 0.5); }
+            70% { box-shadow: 0 0 0 6px rgba(10, 108, 64, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(10, 108, 64, 0); }
+        }
+
+        /* Linear Progress Meter Track */
+        .meter-track {
+            height: 6px;
+            background: var(--surface-3);
+            border-radius: 3px;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: var(--ok);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* ==========================================================================
+           Sidebar & Form Controls (Strict Brand Unboxed Logo Standards)
+           ========================================================================== */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--line);
+            height: 100vh;
+            position: fixed;
+            width: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        /* Unboxed, unconstrained logo floating freely with 1x clear space */
+        .sidebar-header {
+            padding: 24px 20px 20px 20px;
+            border-bottom: 1px solid var(--line);
+            background: transparent;
+        }
+
+        .logo-img {
+            height: 38px;
+            width: auto;
+            max-width: 190px;
+            object-fit: contain;
+            display: block;
+            margin-bottom: 8px;
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .sidebar-brand-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        .sidebar-brand-sub {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--ink-3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .filter-section {
+            margin-bottom: 22px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .filter-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ink-2);
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-actions span {
+            color: var(--accent-700);
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-actions span:hover {
+            color: var(--accent-600);
+            text-decoration: underline;
+        }
+
+        /* Inputs & Form Controls */
+        .smart-input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--r-sm);
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--ink);
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .smart-input:focus {
+            outline: none;
+            border-color: var(--accent-600);
+            box-shadow: 0 0 0 3px rgba(31, 63, 128, 0.12);
+        }
+
+        select.smart-input {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23464c53' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 10px 10px;
+            padding-right: 28px;
+            appearance: none;
+        }
+
+        /* Filter Item Pills */
+        .selection-list {
+            max-height: 160px;
+            overflow-y: auto;
+            padding-right: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-item {
+            padding: 7px 12px;
+            border-radius: var(--r-sm);
+            font-size: 0.78rem;
+            color: var(--ink-2);
+            background: var(--surface-2);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid transparent;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-item:hover {
+            background: var(--surface-3);
+            color: var(--ink);
+            border-color: var(--line);
+        }
+
+        /* Wayfinding active pill using Trust Blue */
+        .filter-item.active {
+            background: var(--accent-50);
+            color: var(--accent-700);
+            font-weight: 700;
+            border-color: var(--accent-200);
+        }
+
+        .filter-item.active::after {
+            content: '✓';
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-700);
+        }
+
+        /* Sidebar Footer & Buttons */
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--line);
+            background: var(--surface);
+        }
+
+        /* Button Hierarchy: Strict Smart Factory Standard */
+        .btn-smart {
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: var(--r-sm);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+
+        .btn-smart:active {
+            transform: scale(0.98);
+        }
+
+        /* The ONLY Primary CTA on screen: Solar Red */
+        .btn-primary-smart {
+            background: var(--brand-600);
+            color: #ffffff !important;
+            box-shadow: var(--shadow-brand);
+            width: 100%;
+        }
+
+        .btn-primary-smart:hover {
+            background: #b80d14;
+            color: #ffffff;
+        }
+
+        /* Workhorse Filled Button: Dark Grey Ink */
+        .btn-ink {
+            background: var(--ink);
+            color: #ffffff !important;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-ink:hover {
+            background: #111315;
+            color: #ffffff;
+        }
+
+        /* Wayfinding Secondary Button: Trust Blue Outline */
+        .btn-outline-smart {
+            background: transparent;
+            border-color: var(--line);
+            color: var(--ink-2) !important;
+        }
+
+        .btn-outline-smart:hover {
+            background: var(--surface-2);
+            border-color: #cbd5e1;
+            color: var(--ink) !important;
+        }
+
+        /* ==========================================================================
+           Main Layout & Context Header (6-Slot Hierarchy)
+           ========================================================================== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 32px 36px 60px 36px;
+            min-height: 100vh;
+        }
+
+        .context-header {
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .context-breadcrumb {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--ink-3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .context-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        /* Segmented Navigation Control Pill Bar */
+        .nav-pills {
+            background: var(--surface-3);
+            border: 1px solid var(--line);
+            padding: 4px;
+            border-radius: var(--r-md);
+            display: inline-flex;
+            gap: 4px;
+            margin-bottom: 24px;
+        }
+
+        .nav-pills .nav-link {
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--ink-2);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--r-sm);
+            padding: 8px 18px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-pills .nav-link:hover {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--ink);
+        }
+
+        .nav-pills .nav-link.active {
+            background: var(--surface);
+            color: var(--accent-700);
+            font-weight: 700;
+            border: 1px solid var(--line);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-pills .nav-link.active i {
+            color: var(--accent-600);
+        }
+
+        /* Offline Camera Roster Card Item */
+        .offline-item-row {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--critical) !important;
+            border-radius: var(--r-sm);
+            padding: 9px 12px;
+            margin-bottom: 6px;
+            transition: var(--transition);
+        }
+
+        .offline-item-row:hover {
+            transform: translateX(3px);
+            border-color: #fca5a5;
+            background: var(--surface-2);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* DataTables Custom Styling */
+        .table-custom {
+            width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.82rem;
+        }
+
+        .table-custom thead th {
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--line);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ink-2);
+            padding: 12px 14px;
+        }
+
+        .table-custom tbody td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--line);
+            color: var(--ink);
+            vertical-align: middle;
+        }
+
+        .table-custom tbody tr:hover {
+            background-color: var(--accent-50);
+            cursor: pointer;
+        }
+
+        .table-custom tbody tr.focused-row {
+            background-color: var(--accent-100) !important;
+            outline: 2px solid var(--accent-600);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Loader */
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: rgba(243, 244, 245, 0.85);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Industrial Loader -->
+<div id="loader">
+    <div class="text-center">
+        <div class="spinner-border text-secondary" role="status" style="width: 2.5rem; height: 2.5rem; border-width: 2px;">
+            <span class="visually-hidden">Loading telemetry...</span>
+        </div>
+        <div class="small fw-bold text-muted mt-2" style="font-size: 0.75rem;">Fetching Vision Telemetry...</div>
+    </div>
+</div>
+
+<div class="container-fluid p-0">
+    
+    <!-- SIDEBAR NAVIGATION & FILTER RAIL -->
+    <aside class="sidebar">
+        <!-- Unboxed floating Solar Logo per Smart Factory Standard -->
+        <div class="sidebar-header">
+            <img src="/static/logo.png" alt="Solar Industries India Limited" class="logo-img" onerror="this.src='/static/solars.png'">
+            <div class="sidebar-brand-title">Solar Industries India Limited</div>
+            <div class="sidebar-brand-sub">
+                <span class="live-dot"></span> Smart Safety • PPE Vision AI
+            </div>
+        </div>
+
+        <div class="sidebar-content">
+            <form id="filterForm">
+                
+                <!-- Date Filter -->
+                <div class="filter-section">
+                    <div class="filter-label mb-2"><i class="bi bi-calendar3"></i> Date range</div>
+                    <select class="smart-input mb-2" id="dateSelect">
+                        <option value="Today" selected>Today</option>
+                        <option value="Yesterday">Yesterday</option>
+                        <option value="Custom">Custom range</option>
+                    </select>
+                    
+                    <div id="customDateDiv" class="d-none mt-2">
+                        <label class="eyebrow ms-1">Start date</label>
+                        <input type="date" class="smart-input mb-2" id="startDate">
+                        <label class="eyebrow ms-1">End date</label>
+                        <input type="date" class="smart-input" id="endDate">
+                    </div>
+                </div>
+
+                <!-- 1. Production House Filter -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <div class="filter-label"><i class="bi bi-building"></i> Production house</div>
+                        <div class="filter-actions">
+                            <span onclick="toggleAll('phList', true)">All</span>
+                            <span style="color:var(--line);margin:0 4px">|</span>
+                            <span onclick="toggleAll('phList', false)">None</span>
+                        </div>
+                    </div>
+                    <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text bg-white border-end-0 text-muted" style="border-color:var(--line);"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0 shadow-none smart-input py-1" style="font-size:0.75rem;" placeholder="Search production house..." onkeyup="filterList(this, 'phList')">
+                    </div>
+                    <div class="selection-list" id="phList"><small class="text-muted ps-1">Loading...</small></div>
+                </div>
+
+                <!-- 2. Area Filter -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <div class="filter-label"><i class="bi bi-geo-alt"></i> Area</div>
+                        <div class="filter-actions">
+                            <span onclick="toggleAll('areaList', true)">All</span>
+                            <span style="color:var(--line);margin:0 4px">|</span>
+                            <span onclick="toggleAll('areaList', false)">None</span>
+                        </div>
+                    </div>
+                    <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text bg-white border-end-0 text-muted" style="border-color:var(--line);"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0 shadow-none smart-input py-1" style="font-size:0.75rem;" placeholder="Search area..." onkeyup="filterList(this, 'areaList')">
+                    </div>
+                    <div class="selection-list" id="areaList"></div>
+                </div>
+
+                <!-- 3. Violation Class Filter -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <div class="filter-label"><i class="bi bi-shield-exclamation"></i> Non-compliant class</div>
+                        <div class="filter-actions">
+                            <span onclick="toggleAll('classList', true)">All</span>
+                            <span style="color:var(--line);margin:0 4px">|</span>
+                            <span onclick="toggleAll('classList', false)">None</span>
+                        </div>
+                    </div>
+                    <div class="selection-list" id="classList"></div>
+                </div>
+                
+                <!-- 4. Recipients Filter (Notification Tab Only) -->
+                <div class="filter-section d-none" id="recipientDiv">
+                    <div class="filter-header">
+                        <div class="filter-label"><i class="bi bi-people"></i> Recipients</div>
+                        <div class="filter-actions">
+                            <span onclick="toggleAll('recipientList', true)">All</span>
+                            <span style="color:var(--line);margin:0 4px">|</span>
+                            <span onclick="toggleAll('recipientList', false)">None</span>
+                        </div>
+                    </div>
+                    <div class="selection-list" id="recipientList"></div>
+                </div>
+
+                <!-- 5. Shift Filter -->
+                <div class="filter-section">
+                    <div class="filter-label mb-2"><i class="bi bi-clock"></i> Active shift</div>
+                    <div class="selection-list" id="shiftList">
+                        <div class="filter-item" data-value="Shift A" onclick="toggleSelection(this)">Shift A (06:00 - 14:00)</div>
+                        <div class="filter-item" data-value="Shift B" onclick="toggleSelection(this)">Shift B (14:00 - 22:00)</div>
+                        <div class="filter-item" data-value="Shift C" onclick="toggleSelection(this)">Shift C (22:00 - 06:00)</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="sidebar-footer">
+            <!-- Exactly ONE Primary Action Button on screen: Solar Red .btn-primary-smart -->
+            <button type="button" class="btn-smart btn-primary-smart mb-2" onclick="loadCurrentTab()">
+                <i class="bi bi-funnel"></i> Apply Filters
+            </button>
+            <div class="d-flex gap-2">
+                <a href="/logout" class="btn-smart btn-outline-smart w-100 py-1" style="font-size:0.75rem;">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+                {% if session.get('user_role') == 'admin' %}
+                <a href="/admin" class="btn-smart btn-outline-smart w-100 py-1" style="font-size:0.75rem;">
+                    <i class="bi bi-sliders"></i> Admin
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT -->
+    <main class="main-content">
+        
+        <!-- [Slot 1: Context Header] -->
+        <header class="context-header">
+            <div>
+                <div class="context-breadcrumb">
+                    <span>Solar Group</span>
+                    <span>•</span>
+                    <span>Smart Factory</span>
+                    <span>•</span>
+                    <span class="text-dark fw-bold">Smart Safety</span>
+                </div>
+                <h1 class="context-title">PPE Safety AI Monitoring</h1>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="pill-ok">
+                        <span class="live-dot"></span> Live Telemetry Connected
+                    </span>
+                    <span class="eyebrow mb-0">350 Monitored Feeds • Continuous Vision Inferencing</span>
+                </div>
+            </div>
+
+            <!-- Time & Shift Telemetry Pill + Workhorse Export Button -->
+            <div class="d-flex flex-column align-items-end">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="tabular fw-bold text-dark fs-5" id="clock">--:--:--</div>
+                    <span class="badge bg-light text-secondary border tabular" id="currentDate">-- -- ----</span>
+                </div>
+                <button class="btn-smart btn-ink" onclick="exportExcel()">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Export Audit Data
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Wayfinding Tabs -->
+        <ul class="nav nav-pills" id="myTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="analytics-tab" data-bs-toggle="pill" data-bs-target="#analytics" type="button" onclick="switchTab('analytics')">
+                    <i class="bi bi-graph-up"></i> Analytics & Health
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="table-tab" data-bs-toggle="pill" data-bs-target="#table-view" type="button" onclick="switchTab('table')">
+                    <i class="bi bi-table"></i> Incident Audit Logbook
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="notif-tab" data-bs-toggle="pill" data-bs-target="#notifications" type="button" onclick="switchTab('notifications')">
+                    <i class="bi bi-bell"></i> Alerts & Routing
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            
+            <!-- ANALYTICS TAB -->
+            <div class="tab-pane fade show active" id="analytics">
+                
+                <!-- [Slots 2 & 4: Hero Attention Exception + Supporting Metric Trio] -->
+                <div class="row g-3 mb-4">
+                    
+                    <!-- [Slot 2: Display Hero Exception Card with 2px Solar Red Top Cap] -->
+                    <div class="col-lg-5 col-md-12">
+                        <div class="panel panel-brand h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="eyebrow-accent">Active non-compliance events</span>
+                                    <span class="pill-critical"><i class="bi bi-exclamation-circle"></i> Requires Action</span>
+                                </div>
+                                <div class="d-flex align-items-baseline gap-2 mt-2">
+                                    <div class="display-4 fw-bold tabular text-dark" id="totalViolations" style="letter-spacing:-0.03em; line-height: 1;">0</div>
+                                    <span class="eyebrow mb-0">Total incidents</span>
+                                </div>
+                            </div>
+                            
+                            <div class="well mt-3 py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-info-circle-fill text-muted" style="font-size: 0.9rem;"></i>
+                                    <small class="text-muted" style="font-size: 0.75rem; line-height: 1.35;">
+                                        Priority safety inspection advised on Nitration & Packing lines; confirm gear compliance before shift handoff.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- [Slot 4: Supporting Metric Trio at ~¼ hero weight] -->
+                    <!-- Metric 1: Camera Fleet Availability -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="eyebrow">Fleet availability</div>
+                                <div class="d-flex align-items-baseline gap-2 mt-2">
+                                    <div class="h3 fw-bold tabular text-dark mb-0" id="activeCams">0</div>
+                                    <small class="text-muted tabular" style="font-size:0.75rem;">/ 350 online</small>
+                                </div>
+                                <div class="meter-track">
+                                    <div class="meter-fill" id="fleetMeter" style="width: 78%;"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: var(--line) !important;">
+                                <span class="eyebrow mb-0">Fleet status</span>
+                                <span class="pill-ok"><i class="bi bi-check-circle"></i> Nominal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metric 2: Offline Cameras Downtime -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="panel h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="eyebrow">Offline feeds</div>
+                                <div class="h3 fw-bold tabular text-danger mt-2 mb-0" id="inactiveCams">0</div>
+                                <small class="text-muted" style="font-size:0.72rem;">Hardware / link down</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: var(--line) !important;">
+                                <span class="eyebrow mb-0">Action</span>
+                                <span class="pill-warn"><i class="bi bi-wrench"></i> Dispatch</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metric 3: AI Inference Engine -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="panel h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="eyebrow">Edge AI engine</div>
+                                <div class="fw-bold text-dark mt-2 mb-0" style="font-size: 1rem;">YOLOv8 Vision</div>
+                                <small class="text-muted" style="font-size:0.72rem;">350 parallel RTSP</small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: var(--line) !important;">
+                                <span class="eyebrow mb-0">Inference</span>
+                                <span class="pill-ok"><i class="bi bi-lightning-charge"></i> Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [Slot 5: Violations Breakdown — Production House & Canonical Class Distribution] -->
+                <div class="row g-3 mb-3">
+                    <div class="col-lg-6">
+                        <div class="panel h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Incidents by production house</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Distribution across manufacturing plants</small>
+                                </div>
+                                <span class="eyebrow mb-0">Ranked</span>
+                            </div>
+                            <div id="chartPH" style="height: 340px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="panel h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Non-compliant class distribution</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Single clean slice per required PPE class</small>
+                                </div>
+                                <span class="eyebrow mb-0">6 Classes</span>
+                            </div>
+                            <div id="chartClassPie" style="height: 340px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Violations by Area -->
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <div class="panel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Incidents by plant area</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Granular operational zone compliance tracking</small>
+                                </div>
+                                <span class="eyebrow mb-0">Zone breakdown</span>
+                            </div>
+                            <div id="chartArea" style="height: 520px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shift Compliance Trend -->
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <div class="panel">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Shift compliance incident trend</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Timeline telemetry showing hourly & daily incident volume</small>
+                                </div>
+                                <span class="pill-ok"><i class="bi bi-clock-history"></i> Continuous</span>
+                            </div>
+                            <div id="chartTrend" style="height: 340px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [Slot 3: Offline Cameras Correct Graphical Representation & Companion Roster] -->
+                <div class="row g-3">
+                    <!-- Left: Ranked Horizontal Bar Chart for Offline Cameras by Production House -->
+                    <div class="col-lg-7">
+                        <div class="panel h-100 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center" style="font-size: 0.9rem;">
+                                        <i class="bi bi-camera-video-off text-danger me-2"></i>
+                                        Offline cameras by production house
+                                    </h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Clusters identifying building-level switch or power disruptions</small>
+                                </div>
+                                <span class="pill-critical">
+                                    <i class="bi bi-circle-fill" style="font-size:6px;"></i>
+                                    <span id="inactiveBadgeCount" class="tabular">0</span> Offline
+                                </span>
+                            </div>
+                            <div id="chartInactive" style="flex: 1; min-height: 360px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Searchable Offline Camera Directory & Inspection Roster -->
+                    <div class="col-lg-5">
+                        <div class="panel h-100 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center" style="font-size: 0.9rem;">
+                                        <i class="bi bi-hdd-network text-primary me-2"></i>
+                                        Offline camera directory
+                                    </h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Target roster for field CCTV technician dispatch</small>
+                                </div>
+                                <span class="badge bg-light text-secondary border tabular" id="offlineRosterCount" style="font-size: 0.72rem;">0 Feeds</span>
+                            </div>
+                            
+                            <div class="input-group input-group-sm mb-3 mt-1">
+                                <span class="input-group-text bg-white border-end-0 text-muted" style="border-color:var(--line);"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0 shadow-none smart-input py-1" style="font-size:0.75rem;" id="searchOfflineRoster" placeholder="Filter by PH, area, or plant..." onkeyup="filterOfflineRoster(this.value)">
+                            </div>
+                            
+                            <div class="flex-grow-1 overflow-auto pe-1" id="offlineRosterContainer" style="max-height: 330px;">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TABLE VIEW TAB -->
+            <div class="tab-pane fade" id="table-view">
+                <div class="panel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.95rem;">Real-time incident audit logbook</h6>
+                            <small class="text-muted" style="font-size: 0.75rem;">Click row or press Enter to inspect evidence image; Up/Down arrows to navigate</small>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="violationsTable" class="table table-custom table-hover w-100">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Production house</th>
+                                    <th>Non-compliant class</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th class="text-center">Triage action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JS Populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS TAB -->
+            <div class="tab-pane fade" id="notifications">
+                
+                <!-- 4 High-Impact Telemetry Metrics -->
+                <div class="row g-3 mb-4">
+                    <!-- Metric 1: Display Hero — Total Dispatched Alerts with 2px Solar Red Top Cap -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-brand h-100 d-flex flex-column justify-content-between p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <span class="eyebrow-accent">Dispatched alerts</span>
+                                    <div class="display-5 fw-bold tabular text-dark mt-1" id="notifTotal" style="line-height: 1.1;">0</div>
+                                </div>
+                                <div class="metric-icon-box brand">
+                                    <i class="bi bi-broadcast-pin"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2" style="border-color: var(--line) !important;">
+                                <small class="text-muted" style="font-size: 0.72rem;">Multi-channel routing</small>
+                                <span class="pill-ok"><span class="live-dot"></span> Live</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metric 2: Most Frequent Recipient -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel h-100 d-flex flex-column justify-content-between p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div style="min-width: 0;">
+                                    <span class="eyebrow">Top recipient in-charge</span>
+                                    <div class="h4 fw-bold text-dark mt-1 mb-0 text-truncate" id="notifLastPerson" title="Supervisor">-</div>
+                                </div>
+                                <div class="metric-icon-box primary">
+                                    <i class="bi bi-person-badge"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2" style="border-color: var(--line) !important;">
+                                <span class="eyebrow mb-0">Delivered</span>
+                                <span class="pill-info tabular" id="notifLastPersonCount">0 alerts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metric 3: Primary Alert Class -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel h-100 d-flex flex-column justify-content-between p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div style="min-width: 0;">
+                                    <span class="eyebrow">Primary alert class</span>
+                                    <div class="h4 fw-bold text-dark mt-1 mb-0 text-truncate" id="notifLastClass" title="Gear Class">-</div>
+                                </div>
+                                <div class="metric-icon-box warning">
+                                    <i class="bi bi-shield-exclamation"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2" style="border-color: var(--line) !important;">
+                                <span class="eyebrow mb-0">Non-compliances</span>
+                                <span class="pill-warn tabular" id="notifLastClassCount">0 events</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metric 4: Highest Alert Facility -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel h-100 d-flex flex-column justify-content-between p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div style="min-width: 0;">
+                                    <span class="eyebrow">Highest alert facility</span>
+                                    <div class="h4 fw-bold text-dark mt-1 mb-0 text-truncate" id="notifLastPH" title="Production House">-</div>
+                                </div>
+                                <div class="metric-icon-box critical">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2" style="border-color: var(--line) !important;">
+                                <span class="eyebrow mb-0">Facility volume</span>
+                                <span class="pill-critical tabular" id="notifLastPHCount">0 events</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2 Primary Visualizations: Donut by Supervisor + Ranked Bar by Production House -->
+                <div class="row g-3 mb-3">
+                    <div class="col-lg-5">
+                        <div class="panel h-100 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">Alerts by recipient supervisor</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Distribution of notifications across plant in-charges</small>
+                                </div>
+                                <span class="badge bg-light text-dark border tabular"><i class="bi bi-pie-chart-fill text-primary me-1"></i> Recipient Share</span>
+                            </div>
+                            <div id="notifPiePerson" style="height: 380px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="panel h-100 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">Alerts by production house</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Ranked facilities by safety notification frequency</small>
+                                </div>
+                                <span class="badge bg-light text-dark border tabular"><i class="bi bi-bar-chart-fill text-primary me-1"></i> Top 14 Facilities</span>
+                            </div>
+                            <div id="notifPiePH" style="height: 380px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Class Distribution & Routing Hierarchy -->
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <div class="panel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">Alert distribution by safety gear class</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Notification volume categorized by non-compliant equipment</small>
+                                </div>
+                                <span class="badge bg-light text-dark border tabular"><i class="bi bi-shield-shaded text-primary me-1"></i> 6 Canonical Classes</span>
+                            </div>
+                            <div id="notifPieClass" style="height: 360px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="panel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">Notification escalation & routing hierarchy</h6>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Organizational tree from Chakdoh central hub to facility lines</small>
+                                </div>
+                                <span class="badge bg-light text-dark border tabular"><i class="bi bi-diagram-3-fill text-success me-1"></i> Live Topology</span>
+                            </div>
+                            <div id="notifTree" style="height: 600px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- Evidence Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="background: rgba(33,37,41,0.95); backdrop-filter: blur(8px); border-radius: var(--r-lg);">
+            <div class="modal-header border-0 pb-0">
+                <span class="text-white small fw-bold">Incident Evidence Capture</span>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <img id="modalImage" src="" class="img-fluid rounded" style="max-height: 80vh; border: 1px solid rgba(255,255,255,0.2);" alt="Evidence">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vendor Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    let activeTab = 'analytics';
+    let tableData = [];
+    let dataTableInstance = null;
+    let selectedRowIndex = -1;
+    let allOfflineCameras = [];
+
+    document.addEventListener('DOMContentLoaded', () => { 
+        setDefaultDates(); 
+        updateClock(); 
+        refreshFiltersByDate(); 
+        loadCurrentTab(); 
+        
+        setInterval(updateClock, 1000); 
+        setInterval(loadCurrentTab, 600000); 
+
+        document.getElementById('dateSelect').addEventListener('change', (e) => {
+            document.getElementById('customDateDiv').classList.toggle('d-none', e.target.value !== 'Custom');
+            refreshFiltersByDate();
+        });
+        document.getElementById('startDate').addEventListener('change', refreshFiltersByDate);
+        document.getElementById('endDate').addEventListener('change', refreshFiltersByDate);
+    });
+
+    function filterList(input, listId) {
+        const filter = input.value.toLowerCase();
+        const list = document.getElementById(listId);
+        const items = list.getElementsByClassName('filter-item');
+        
+        for (let i = 0; i < items.length; i++) {
+            const text = items[i].innerText || items[i].textContent;
+            items[i].style.display = (text.toLowerCase().indexOf(filter) > -1) ? "" : "none";
+        }
+    }
+
+    async function refreshFiltersByDate() {
+        const payload = getFilterPayload();
+        document.getElementById('phList').innerHTML = '<small class="text-muted ps-1">Updating...</small>';
+        document.getElementById('areaList').innerHTML = '<small class="text-muted ps-1">Updating...</small>';
+
+        try {
+            const res = await fetch('/api/filters', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    start_date: payload.start_date,
+                    end_date: payload.end_date
+                })
+            });
+            const data = await res.json();
+            populateList('phList', data.production_houses);
+            populateList('areaList', data.areas);
+            populateList('classList', data.classes);
+            populateList('recipientList', data.recipients);
+        } catch(e) {
+            console.error("Filter refresh failed", e);
+            initFilters();
+        }
+    }
+
+    function formatDateEU(isoDate) {
+        if (!isoDate) return '';
+        const parts = isoDate.split('-');
+        if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        return isoDate;
+    }
+
+    function updateClock() { 
+        const now = new Date(); 
+        document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'}); 
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        document.getElementById('currentDate').innerText = `${d}-${m}-${y}`; 
+    }
+
+    function setDefaultDates() { 
+        const today = new Date().toISOString().split('T')[0]; 
+        document.getElementById('startDate').value = today; 
+        document.getElementById('endDate').value = today; 
+    }
+    
+    function switchTab(tab) { 
+        activeTab = tab; 
+        const r = document.getElementById('recipientDiv'); 
+        if(tab === 'notifications') r.classList.remove('d-none'); 
+        else r.classList.add('d-none'); 
+        loadCurrentTab(); 
+    }
+
+    function loadCurrentTab() { 
+        if(activeTab === 'notifications') fetchNotificationData(); 
+        else fetchDashboardData(); 
+    }
+    
+    async function initFilters() { 
+        try { 
+            const res = await fetch('/api/filters'); 
+            const data = await res.json(); 
+            populateList('phList', data.production_houses); 
+            populateList('areaList', data.areas); 
+            populateList('classList', data.classes); 
+            populateList('recipientList', data.recipients); 
+        } catch(e) { 
+            console.error("Filter init failed", e); 
+        } 
+    }
+    
+    function populateList(containerId, items) { 
+        const container = document.getElementById(containerId); 
+        container.innerHTML = ''; 
+        if(!items || items.length === 0) { 
+            container.innerHTML = '<small class="text-muted ps-2" style="font-size:0.75rem;">No entries found</small>'; 
+            return; 
+        } 
+        items.forEach(item => { 
+            const div = document.createElement('div'); 
+            div.className = 'filter-item'; 
+            div.innerText = item; 
+            div.dataset.value = item; 
+            div.onclick = function() { this.classList.toggle('active'); }; 
+            container.appendChild(div); 
+        }); 
+    }
+    
+    function toggleSelection(element) { element.classList.toggle('active'); }
+    function toggleAll(listId, state) { 
+        const list = document.getElementById(listId); 
+        const items = list.getElementsByClassName('filter-item'); 
+        for(let i=0; i<items.length; i++){ 
+            if(state) items[i].classList.add('active'); 
+            else items[i].classList.remove('active'); 
+        } 
+    }
+    function getSelectedValues(containerId) { 
+        const container = document.getElementById(containerId); 
+        const actives = container.querySelectorAll('.filter-item.active'); 
+        return Array.from(actives).map(el => el.dataset.value); 
+    }
+
+    function getFilterPayload() { 
+        let mode = document.getElementById('dateSelect').value; 
+        let start = document.getElementById('startDate').value; 
+        let end = document.getElementById('endDate').value; 
+        if (mode === 'Yesterday') { 
+            let d = new Date(); 
+            d.setDate(d.getDate() - 1); 
+            start = end = d.toISOString().split('T')[0]; 
+        } else if (mode === 'Today') { 
+            let d = new Date(); 
+            start = end = d.toISOString().split('T')[0]; 
+        } 
+        return { 
+            start_date: start, 
+            end_date: end, 
+            production_houses: getSelectedValues('phList'), 
+            areas: getSelectedValues('areaList'), 
+            classes: getSelectedValues('classList'), 
+            shifts: getSelectedValues('shiftList'), 
+            recipients: getSelectedValues('recipientList') 
+        }; 
+    }
+
+    // ==========================================================================
+    // Data Fetching & ECharts Visualizations (Strict Smart Factory Aesthetics)
+    // ==========================================================================
+    async function fetchDashboardData() { 
+        document.getElementById('loader').style.display = 'flex'; 
+        try { 
+            const res = await fetch('/api/dashboard_data', { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(getFilterPayload()) 
+            }); 
+            const data = await res.json(); 
+            
+            const totalV = data.metrics.total_violations || 0;
+            const activeC = data.metrics.active_cameras || 0;
+            const inactiveC = data.metrics.inactive_cameras || 0;
+            
+            document.getElementById('totalViolations').innerText = totalV; 
+            document.getElementById('activeCams').innerText = activeC; 
+            document.getElementById('inactiveCams').innerText = inactiveC; 
+            
+            const badgeCount = document.getElementById('inactiveBadgeCount');
+            if (badgeCount) badgeCount.innerText = inactiveC;
+
+            // Calculate fleet availability meter
+            const totalFleet = (activeC + inactiveC) || 350;
+            const fleetPct = Math.round((activeC / totalFleet) * 100);
+            const fleetMeter = document.getElementById('fleetMeter');
+            if (fleetMeter) fleetMeter.style.width = `${fleetPct}%`;
+
+            // Render Charts
+            renderChart('chartPH', 'Violations by Production House', 'bar', data.charts.production_house, '#4a5157'); 
+            renderChart('chartArea', 'Violations by Area', 'bar', data.charts.area, '#1f3f80'); 
+            renderPie('chartClassPie', 'Non-Compliant Class Distribution', data.charts.class_pie); 
+            renderLine('chartTrend', data.charts.trend); 
+            
+            // Correct Offline Cameras Visualizations (Horizontal Bar + Directory)
+            renderInactiveBar('chartInactive', data.charts.inactive_by_ph || data.charts.inactive_loc || []);
+            renderOfflineDirectory(data.charts.inactive_details || []);
+            
+            tableData = data.table; 
+            initDataTable(); 
+        } catch(e) { 
+            console.error("Dashboard data load error:", e); 
+        } finally { 
+            document.getElementById('loader').style.display = 'none'; 
+        } 
+    }
+
+    async function fetchNotificationData() { 
+        document.getElementById('loader').style.display = 'flex'; 
+        try { 
+            const res = await fetch('/api/notifications_data', { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(getFilterPayload()) 
+            }); 
+            const data = await res.json(); 
+            if(data.metrics.total !== undefined) { 
+                document.getElementById('notifTotal').innerText = data.metrics.total; 
+                document.getElementById('notifLastPerson').innerText = data.metrics.last_person.name||'-'; 
+                document.getElementById('notifLastPersonCount').innerText = `${data.metrics.last_person.count} alerts`; 
+                document.getElementById('notifLastClass').innerText = data.metrics.last_class.name||'-'; 
+                document.getElementById('notifLastClassCount').innerText = `${data.metrics.last_class.count} events`; 
+                document.getElementById('notifLastPH').innerText = data.metrics.last_ph.name||'-'; 
+                document.getElementById('notifLastPHCount').innerText = `${data.metrics.last_ph.count} alerts`; 
+                
+                // Clean modern visualizations (Donut + Ranked Bar Chart)
+                renderNotifPersonDonut('notifPiePerson', data.charts.person_pie || []); 
+                renderNotifPHBar('notifPiePH', data.charts.ph_pie || []); 
+                renderNotifClassDonut('notifPieClass', data.charts.class_pie || []); 
+                renderTree('notifTree', data.tree); 
+            } 
+        } catch(e) { 
+            console.error("Notifications data load error:", e); 
+        } finally { 
+            document.getElementById('loader').style.display = 'none'; 
+        } 
+    }
+
+    // ==========================================================================
+    // Table Initialization with Keyboard Shortcuts
+    // ==========================================================================
+    function initDataTable() {
+        if ($.fn.DataTable.isDataTable('#violationsTable')) { 
+            $('#violationsTable').DataTable().destroy(); 
+        }
+
+        dataTableInstance = $('#violationsTable').DataTable({
+            data: tableData,
+            columns: [
+                { data: 'area' },
+                { data: 'production_house' },
+                { data: 'class1', render: function(d){ 
+                    return `<span class="badge bg-light text-dark border fw-normal" style="font-family:'Montserrat',sans-serif;">${d}</span>`; 
+                }},
+                { data: 'date1', render: function(d) { return formatDateEU(d); } },
+                { data: 'time1' },
+                { 
+                    data: 'id', 
+                    className: 'text-center',
+                    orderable: false,
+                    render: function(d) { 
+                        return `<button class="btn-smart btn-outline-smart py-1 px-2" style="font-size:0.75rem;" 
+                                onclick="event.stopPropagation(); falseVio(${d})">
+                                <i class="bi bi-x-circle text-warning me-1"></i>Mark False</button>`; 
+                    } 
+                }
+            ],
+            order: [[3, 'desc'], [4, 'desc']], 
+            pageLength: 10,
+            dom: '<"d-flex justify-content-between align-items-center mb-3"l<"ms-auto"f>>rtip',
+            language: { search: "", searchPlaceholder: "Search records..." },
+            drawCallback: function() {
+                selectedRowIndex = -1;
+            }
+        });
+
+        $('#violationsTable tbody').off('click', 'tr').on('click', 'tr', function() {
+            const data = dataTableInstance.row(this).data();
+            if (data && data.image_url) {
+                viewImg(data.image_url);
+            }
+        });
+    }
+
+    // ==========================================================================
+    // ECharts Visualizations — Standard Smart Factory Implementation
+    // ==========================================================================
+    function renderChart(id, title, type, data, color) { 
+        const dom = document.getElementById(id); 
+        if(!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom); 
+        chart.setOption({ 
+            tooltip: { 
+                trigger: 'axis', 
+                backgroundColor: 'rgba(255,255,255,0.98)', 
+                borderColor: '#e6e8ea', 
+                borderWidth: 1, 
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 } 
+            }, 
+            grid: { left: '3%', right: '4%', bottom: '5%', top: '8%', containLabel: true }, 
+            xAxis: { 
+                type: 'category', 
+                data: data.map(d=>d.name), 
+                axisLabel: { rotate: 40, color: '#707070', fontSize: 11, fontFamily: 'Montserrat', fontWeight: 500 }, 
+                axisLine: { lineStyle: { color: '#e6e8ea' } },
+                axisTick: { show: false }
+            }, 
+            yAxis: { 
+                type: 'value', 
+                splitLine: { lineStyle: { type: 'dashed', color: '#f1f2f4' } }, 
+                axisLabel: { color: '#707070', fontSize: 11, fontFamily: 'Montserrat' } 
+            }, 
+            series: [{ 
+                type: type, 
+                data: data.map(d=>d.value), 
+                itemStyle: { color: color, borderRadius: [4, 4, 0, 0] }, 
+                barMaxWidth: 32, 
+                emphasis: { itemStyle: { shadowBlur: 8, shadowColor: 'rgba(0,0,0,0.15)' } } 
+            }] 
+        }); 
+        window.addEventListener('resize', ()=>chart.resize()); 
+    }
+
+    function renderPie(id, title, data, rose=false) {
+        const dom = document.getElementById(id);
+        if(!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+        
+        // Smart Factory Domain Palette: Trust Blue, Powder Blue, Graphite, Crimson, Amber
+        const palette = ['#1f3f80', '#0284c7', '#38bdf8', '#4a5157', '#b42318', '#a85908'];
+        
+        chart.setOption({
+            color: palette,
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255,255,255,0.98)',
+                borderColor: '#e6e8ea',
+                borderWidth: 1,
+                padding: [8, 12],
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 },
+                formatter: '{b}: <b>{c}</b> ({d}%)'
+            },
+            legend: {
+                orient: 'horizontal',
+                bottom: '1%',
+                left: 'center',
+                itemWidth: 10,
+                itemHeight: 10,
+                textStyle: { fontFamily: 'Montserrat', fontSize: 11, color: '#707070', fontWeight: 500 }
+            },
+            series: [{
+                type: 'pie',
+                radius: rose ? [15, 90] : ['38%', '65%'],
+                center: ['50%', '46%'],
+                roseType: rose ? 'area' : false,
+                itemStyle: {
+                    borderRadius: 6,
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: true,
+                    formatter: '{b}\n{d}%',
+                    fontWeight: 600,
+                    fontSize: 11,
+                    color: '#464c53',
+                    fontFamily: 'Montserrat'
+                },
+                labelLine: {
+                    length: 10,
+                    length2: 8,
+                    smooth: true
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 14,
+                        shadowColor: 'rgba(31, 63, 128, 0.2)'
+                    }
+                },
+                data: data
+            }]
+        });
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    function renderDonut(id, title, data) {
+        const dom = document.getElementById(id);
+        if(!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+        const palette = ['#1f3f80', '#0284c7', '#38bdf8', '#4a5157', '#b42318', '#a85908'];
+        chart.setOption({
+            color: palette,
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255,255,255,0.98)',
+                borderColor: '#e6e8ea',
+                borderWidth: 1,
+                padding: [8, 12],
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 },
+                formatter: '{b}: <b>{c}</b> ({d}%)'
+            },
+            legend: {
+                orient: 'horizontal',
+                bottom: '1%',
+                left: 'center',
+                itemWidth: 10,
+                itemHeight: 10,
+                textStyle: { fontFamily: 'Montserrat', fontSize: 11, color: '#707070', fontWeight: 500 }
+            },
+            series: [{
+                type: 'pie',
+                radius: ['45%', '70%'],
+                center: ['50%', '46%'],
+                itemStyle: { borderRadius: 6, borderColor: '#ffffff', borderWidth: 2 },
+                label: {
+                    show: true,
+                    formatter: '{b}\n{d}%',
+                    fontWeight: 600,
+                    fontSize: 11,
+                    color: '#464c53',
+                    fontFamily: 'Montserrat'
+                },
+                emphasis: { itemStyle: { shadowBlur: 14, shadowColor: 'rgba(31, 63, 128, 0.2)' } },
+                data: data
+            }]
+        });
+        window.addEventListener('resize', () => chart.resize());
+    }
+    
+    function renderLine(id, data) { 
+        const dom = document.getElementById(id); 
+        if(!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom); 
+        const formattedX = data.map(d => {
+            if(d.datetime && d.datetime.includes('-')) {
+                let dt = new Date(d.datetime);
+                let day = String(dt.getDate()).padStart(2,'0');
+                let month = String(dt.getMonth()+1).padStart(2,'0');
+                let year = dt.getFullYear();
+                let time = d.datetime.split(' ')[1] || '';
+                return `${day}-${month}-${year} ${time}`.trim();
+            }
+            return d.datetime;
+        });
+        chart.setOption({ 
+            tooltip: { 
+                trigger: 'axis', 
+                backgroundColor: 'rgba(255,255,255,0.98)', 
+                borderColor: '#e6e8ea', 
+                borderWidth: 1, 
+                textStyle: { color: '#212529', fontFamily: 'Montserrat' } 
+            }, 
+            grid: { left: '3%', right: '4%', bottom: '5%', top: '8%', containLabel: true }, 
+            xAxis: { 
+                type: 'category', 
+                data: formattedX, 
+                axisLabel: { color: '#707070', fontSize: 11, fontFamily: 'Montserrat', fontWeight: 500 }, 
+                axisLine: { lineStyle: { color: '#e6e8ea' } },
+                axisTick: { show: false }
+            }, 
+            yAxis: { 
+                type: 'value', 
+                splitLine: { lineStyle: { type: 'dashed', color: '#f1f2f4' } }, 
+                axisLabel: { color: '#707070', fontSize: 11, fontFamily: 'Montserrat' } 
+            }, 
+            series: [{ 
+                type: 'line', 
+                smooth: true, 
+                showSymbol: false, 
+                lineStyle: { width: 2.5, color: '#0a6c40' }, 
+                areaStyle: { 
+                    color: new echarts.graphic.LinearGradient(0,0,0,1,[
+                        {offset:0, color:'rgba(10,108,64,0.3)'},
+                        {offset:1, color:'rgba(10,108,64,0.02)'}
+                    ]) 
+                }, 
+                data: data.map(d=>d.value) 
+            }] 
+        }); 
+        window.addEventListener('resize', ()=>chart.resize()); 
+    }
+    
+    function renderTree(id, treeData) { 
+        const dom = document.getElementById(id); 
+        if(!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom); 
+        chart.clear();
+        chart.setOption({ 
+            tooltip: { 
+                trigger: 'item', 
+                triggerOn: 'mousemove', 
+                backgroundColor: 'rgba(255,255,255,0.98)', 
+                borderColor: '#e6e8ea', 
+                borderWidth: 1, 
+                padding: [8, 12],
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 },
+                formatter: function(params) {
+                    return `<strong>${params.name}</strong><br><span style="color:#707070;">Routing Pathway Node</span>`;
+                }
+            }, 
+            series: [{ 
+                type: 'tree', 
+                data: [treeData], 
+                top: '6%', 
+                bottom: '6%', 
+                left: '12%', 
+                right: '22%', 
+                symbol: 'circle',
+                symbolSize: 10, 
+                itemStyle: { 
+                    color: '#1f3f80',
+                    borderColor: '#c7e0f3',
+                    borderWidth: 2
+                }, 
+                lineStyle: {
+                    color: '#cbd5e1',
+                    width: 1.5,
+                    curveness: 0.5
+                },
+                label: { 
+                    position: 'left', 
+                    align: 'right', 
+                    fontSize: 11, 
+                    fontWeight: 600, 
+                    color: '#212529',
+                    fontFamily: 'Montserrat' 
+                }, 
+                leaves: { 
+                    label: { 
+                        position: 'right', 
+                        align: 'left',
+                        color: '#464c53',
+                        fontWeight: 500
+                    } 
+                }, 
+                expandAndCollapse: true,
+                animationDuration: 500,
+                animationDurationUpdate: 600
+            }] 
+        }); 
+        window.addEventListener('resize', ()=>chart.resize()); 
+    }
+
+    // ==========================================================================
+    // Alerts & Routing Visualizations (Ranked Horizontal Bar & Modern Donut)
+    // ==========================================================================
+    function renderNotifPHBar(id, data) {
+        const dom = document.getElementById(id);
+        if (!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+        
+        if (!data || data.length === 0) {
+            chart.clear();
+            chart.setOption({
+                graphic: {
+                    type: 'text',
+                    left: 'center',
+                    top: 'middle',
+                    style: {
+                        text: 'No notification records found',
+                        fill: '#707070',
+                        font: '13px Montserrat, sans-serif'
+                    }
+                }
+            });
+            return;
+        }
+
+        // Sort descending so the highest volume facility is at the top
+        const sorted = [...data].sort((a, b) => b.value - a.value);
+        const topSorted = sorted.slice(0, 14); // Keep top facilities ultra-clean with zero label overlap
+        const total = sorted.reduce((sum, d) => sum + (d.value || 0), 0);
+
+        chart.clear();
+        chart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(31, 63, 128, 0.04)' } },
+                backgroundColor: 'rgba(255,255,255,0.98)',
+                borderColor: '#e6e8ea',
+                borderWidth: 1,
+                padding: [10, 14],
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 },
+                formatter: function(params) {
+                    const item = params[0];
+                    const val = item.value;
+                    const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                    return `
+                        <div style="font-weight:700; margin-bottom:4px; font-size:13px; color:#212529;">${item.name}</div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+                            <span style="color:#707070;">Dispatched Alerts:</span>
+                            <span style="font-weight:700; color:#1f3f80;">${val}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:2px;">
+                            <span style="color:#707070;">Share of Alerts:</span>
+                            <span style="font-weight:600; color:#0284c7;">${pct}%</span>
+                        </div>
+                    `;
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '12%',
+                top: '4%',
+                bottom: '4%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                minInterval: 1,
+                splitLine: { lineStyle: { type: 'dashed', color: '#f1f2f4' } },
+                axisLabel: { color: '#707070', fontSize: 11, fontFamily: 'Montserrat' }
+            },
+            yAxis: {
+                type: 'category',
+                data: topSorted.map(d => d.name),
+                inverse: true,
+                axisLabel: {
+                    color: '#212529',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    fontFamily: 'Montserrat',
+                    formatter: function(value) {
+                        return value.length > 18 ? value.substring(0, 16) + '...' : value;
+                    }
+                },
+                axisTick: { show: false },
+                axisLine: { lineStyle: { color: '#e6e8ea' } }
+            },
+            series: [{
+                name: 'Dispatched Alerts',
+                type: 'bar',
+                data: topSorted.map(d => d.value),
+                barMaxWidth: 16,
+                itemStyle: {
+                    borderRadius: [0, 6, 6, 0],
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#1f3f80' },
+                        { offset: 1, color: '#0284c7' }
+                    ])
+                },
+                label: {
+                    show: true,
+                    position: 'right',
+                    distance: 8,
+                    formatter: '{c} alerts',
+                    fontWeight: 700,
+                    fontSize: 11,
+                    color: '#1f3f80',
+                    fontFamily: 'Montserrat'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                            { offset: 0, color: '#0284c7' },
+                            { offset: 1, color: '#38bdf8' }
+                        ])
+                    }
+                }
+            }]
+        });
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    function renderNotifPersonDonut(id, data) {
+        const dom = document.getElementById(id);
+        if (!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+        
+        if (!data || data.length === 0) {
+            chart.clear();
+            return;
+        }
+
+        const total = data.reduce((sum, d) => sum + (d.value || 0), 0);
+        // Smart Factory palette: Trust Blue, Cyan, Powder Blue, Graphite, Warm Amber, Emerald
+        const palette = ['#1f3f80', '#0284c7', '#38bdf8', '#4a5157', '#a85908', '#0a6c40', '#7b3fa0'];
+
+        chart.clear();
+        chart.setOption({
+            color: palette,
+            graphic: [{
+                type: 'text',
+                left: 'center',
+                top: '40%',
+                style: {
+                    text: total.toLocaleString(),
+                    textAlign: 'center',
+                    fill: '#1a2d5e',
+                    fontSize: 24,
+                    fontWeight: 700,
+                    fontFamily: 'Montserrat'
+                }
+            }, {
+                type: 'text',
+                left: 'center',
+                top: '48%',
+                style: {
+                    text: 'TOTAL ALERTS',
+                    textAlign: 'center',
+                    fill: '#707070',
+                    fontSize: 9,
+                    fontWeight: 600,
+                    letterSpacing: 0.5,
+                    fontFamily: 'Montserrat'
+                }
+            }],
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255,255,255,0.98)',
+                borderColor: '#e6e8ea',
+                borderWidth: 1,
+                padding: [8, 12],
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 },
+                formatter: '{b}: <b>{c}</b> alerts ({d}%)'
+            },
+            legend: {
+                orient: 'horizontal',
+                bottom: '0%',
+                left: 'center',
+                itemWidth: 10,
+                itemHeight: 10,
+                textStyle: { fontFamily: 'Montserrat', fontSize: 11, color: '#707070', fontWeight: 500 }
+            },
+            series: [{
+                name: 'Supervisor Alerts',
+                type: 'pie',
+                radius: ['52%', '72%'],
+                center: ['50%', '45%'],
+                avoidLabelOverlap: true,
+                itemStyle: {
+                    borderRadius: 6,
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: true,
+                    formatter: '{b}\n{d}%',
+                    fontWeight: 600,
+                    fontSize: 11,
+                    color: '#464c53',
+                    fontFamily: 'Montserrat'
+                },
+                labelLine: {
+                    length: 10,
+                    length2: 8,
+                    smooth: true
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 14,
+                        shadowColor: 'rgba(31, 63, 128, 0.2)'
+                    }
+                },
+                data: data
+            }]
+        });
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    function renderNotifClassDonut(id, data) {
+        const dom = document.getElementById(id);
+        if (!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+        
+        const classTotal = data.reduce((sum, d) => sum + (d.value || 0), 0);
+        // Powder blue palette per user instruction
+        const palette = ['#0284c7', '#38bdf8', '#1f3f80', '#4a5157', '#b42318', '#a85908'];
+        
+        chart.clear();
+        chart.setOption({
+            color: palette,
+            graphic: [{
+                type: 'text',
+                left: 'center',
+                top: '40%',
+                style: {
+                    text: classTotal.toLocaleString(),
+                    textAlign: 'center',
+                    fill: '#1a2d5e',
+                    fontSize: 24,
+                    fontWeight: 700,
+                    fontFamily: 'Montserrat'
+                }
+            }, {
+                type: 'text',
+                left: 'center',
+                top: '48%',
+                style: {
+                    text: 'EQUIPMENT ALERTS',
+                    textAlign: 'center',
+                    fill: '#707070',
+                    fontSize: 9,
+                    fontWeight: 600,
+                    letterSpacing: 0.5,
+                    fontFamily: 'Montserrat'
+                }
+            }],
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255,255,255,0.98)',
+                borderColor: '#e6e8ea',
+                borderWidth: 1,
+                padding: [8, 12],
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 },
+                formatter: '{b}: <b>{c}</b> events ({d}%)'
+            },
+            legend: {
+                orient: 'horizontal',
+                bottom: '1%',
+                left: 'center',
+                itemWidth: 10,
+                itemHeight: 10,
+                textStyle: { fontFamily: 'Montserrat', fontSize: 11, color: '#707070', fontWeight: 500 }
+            },
+            series: [{
+                type: 'pie',
+                radius: ['52%', '72%'],
+                center: ['50%', '45%'],
+                itemStyle: { borderRadius: 6, borderColor: '#ffffff', borderWidth: 2 },
+                label: {
+                    show: true,
+                    formatter: '{b}\n{d}%',
+                    fontWeight: 600,
+                    fontSize: 11,
+                    color: '#464c53',
+                    fontFamily: 'Montserrat'
+                },
+                emphasis: { itemStyle: { shadowBlur: 14, shadowColor: 'rgba(31, 63, 128, 0.2)' } },
+                data: data
+            }]
+        });
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    // ==========================================================================
+    // Correct Graphical Representation for Offline Cameras (Bar Chart & Directory)
+    // ==========================================================================
+    function renderInactiveBar(id, data) {
+        const dom = document.getElementById(id);
+        if (!dom) return;
+        let chart = echarts.getInstanceByDom(dom) || echarts.init(dom);
+        
+        if (!data || data.length === 0) {
+            chart.clear();
+            chart.setOption({
+                graphic: {
+                    type: 'group',
+                    left: 'center',
+                    top: 'middle',
+                    children: [
+                        {
+                            type: 'text',
+                            style: {
+                                text: '✔',
+                                fill: '#0a6c40',
+                                font: 'bold 32px Montserrat, sans-serif'
+                            },
+                            left: 'center',
+                            top: -24
+                        },
+                        {
+                            type: 'text',
+                            style: {
+                                text: 'All Cameras Online (100% Operational)',
+                                fill: '#212529',
+                                font: 'bold 14px Montserrat, sans-serif'
+                            },
+                            left: 'center',
+                            top: 18
+                        },
+                        {
+                            type: 'text',
+                            style: {
+                                text: 'Zero downtime recorded across all monitored production houses.',
+                                fill: '#707070',
+                                font: '12px Montserrat, sans-serif'
+                            },
+                            left: 'center',
+                            top: 40
+                        }
+                    ]
+                }
+            });
+            return;
+        }
+
+        const totalOffline = data.reduce((acc, cur) => acc + (cur.value || 0), 0);
+        const sortedData = [...data].sort((a, b) => b.value - a.value);
+        const categories = sortedData.map(d => d.name);
+        const values = sortedData.map(d => d.value);
+
+        chart.clear();
+        chart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(31, 63, 128, 0.04)' } },
+                backgroundColor: 'rgba(255,255,255,0.98)',
+                borderColor: '#e6e8ea',
+                borderWidth: 1,
+                padding: [10, 14],
+                textStyle: { color: '#212529', fontFamily: 'Montserrat', fontSize: 12 },
+                formatter: function(params) {
+                    const item = params[0];
+                    const val = item.value;
+                    const pct = totalOffline > 0 ? ((val / totalOffline) * 100).toFixed(1) : 0;
+                    return `
+                        <div style="font-weight:700; margin-bottom:4px; font-size:13px; color:#212529;">${item.name}</div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+                            <span style="color:#707070;">Offline Cameras:</span>
+                            <span style="font-weight:700; color:#b42318;">${val}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:2px;">
+                            <span style="color:#707070;">Share of Downtime:</span>
+                            <span style="font-weight:600; color:#1f3f80;">${pct}%</span>
+                        </div>
+                    `;
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '12%',
+                top: '5%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                minInterval: 1,
+                splitLine: { lineStyle: { type: 'dashed', color: '#f1f2f4' } },
+                axisLabel: { color: '#707070', fontSize: 11, fontFamily: 'Montserrat' }
+            },
+            yAxis: {
+                type: 'category',
+                data: categories,
+                inverse: true,
+                axisLabel: {
+                    color: '#212529',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    fontFamily: 'Montserrat',
+                    formatter: function(value) {
+                        return value.length > 20 ? value.substring(0, 18) + '...' : value;
+                    }
+                },
+                axisTick: { show: false },
+                axisLine: { lineStyle: { color: '#e6e8ea' } }
+            },
+            series: [{
+                name: 'Offline Cameras',
+                type: 'bar',
+                data: values,
+                barMaxWidth: 18,
+                itemStyle: {
+                    borderRadius: [0, 6, 6, 0],
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#4a5157' },
+                        { offset: 1, color: '#b42318' }
+                    ])
+                },
+                label: {
+                    show: true,
+                    position: 'right',
+                    distance: 8,
+                    formatter: '{c}',
+                    fontWeight: 700,
+                    fontSize: 11,
+                    color: '#b42318',
+                    fontFamily: 'Montserrat'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                            { offset: 0, color: '#b42318' },
+                            { offset: 1, color: '#ed1c24' }
+                        ])
+                    }
+                }
+            }]
+        });
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    function renderOfflineDirectory(items) {
+        allOfflineCameras = items || [];
+        const countBadge = document.getElementById('offlineRosterCount');
+        if (countBadge) countBadge.innerText = `${allOfflineCameras.length} Feeds`;
+        
+        const searchInput = document.getElementById('searchOfflineRoster');
+        if (searchInput) searchInput.value = '';
+        
+        displayOfflineRoster(allOfflineCameras);
+    }
+
+    function displayOfflineRoster(items) {
+        const container = document.getElementById('offlineRosterContainer');
+        if (!container) return;
+        
+        if (!items || items.length === 0) {
+            if (allOfflineCameras.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-check-circle text-success fs-3 mb-2 d-block"></i>
+                        <div class="fw-bold text-dark" style="font-size:0.85rem;">All Feeds Online</div>
+                        <small style="font-size:0.72rem;">All monitored camera feeds are streaming frames normally.</small>
+                    </div>`;
+            } else {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-search fs-4 mb-2 d-block text-secondary"></i>
+                        <div class="fw-bold text-dark" style="font-size:0.85rem;">No matching cameras</div>
+                        <small style="font-size:0.72rem;">No offline cameras match your search query.</small>
+                    </div>`;
+            }
+            return;
+        }
+        
+        let html = '';
+        items.forEach(cam => {
+            const ph = cam.production_house || 'Unknown PH';
+            const area = cam.area || 'Unknown Area';
+            const plant = cam.plant || 'Main';
+            html += `
+                <div class="offline-item-row d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center text-truncate me-2">
+                        <span class="badge bg-light text-dark border me-2 fw-bold text-nowrap" style="font-size: 0.7rem; min-width: 62px; text-align: center;">
+                            ${escapeHtml(ph)}
+                        </span>
+                        <div class="text-truncate">
+                            <div class="fw-bold text-dark text-truncate" style="font-size: 0.78rem;" title="${escapeHtml(area)}">
+                                ${escapeHtml(area)}
+                            </div>
+                            <small class="text-muted" style="font-size: 0.68rem;">Plant: ${escapeHtml(plant)}</small>
+                        </div>
+                    </div>
+                    <span class="pill-critical text-nowrap" style="font-size: 0.68rem;">
+                        <i class="bi bi-circle-fill" style="font-size: 5px;"></i> Offline
+                    </span>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function filterOfflineRoster(query) {
+        const q = (query || '').toLowerCase().trim();
+        if (!q) {
+            displayOfflineRoster(allOfflineCameras);
+            const countBadge = document.getElementById('offlineRosterCount');
+            if (countBadge) countBadge.innerText = `${allOfflineCameras.length} Feeds`;
+            return;
+        }
+        const filtered = allOfflineCameras.filter(c => 
+            (c.production_house && c.production_house.toLowerCase().includes(q)) ||
+            (c.area && c.area.toLowerCase().includes(q)) ||
+            (c.plant && c.plant.toLowerCase().includes(q))
+        );
+        displayOfflineRoster(filtered);
+        const countBadge = document.getElementById('offlineRosterCount');
+        if (countBadge) countBadge.innerText = `${filtered.length} / ${allOfflineCameras.length}`;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+        });
+    }
+
+    // ==========================================================================
+    // Actions & Modal Handlers
+    // ==========================================================================
+    async function viewImg(url) { 
+        try { 
+            const res = await fetch('/api/get_image_url', { 
+                method: 'POST', 
+                headers: {'Content-Type':'application/json'}, 
+                body: JSON.stringify({image_url:url}) 
+            }); 
+            const d = await res.json(); 
+            if(d.url) { 
+                document.getElementById('modalImage').src = d.url; 
+                new bootstrap.Modal(document.getElementById('imageModal')).show(); 
+            } 
+        } catch(e) { 
+            console.error("Image fetch error", e); 
+        } 
+    }
+
+    async function falseVio(id) { 
+        if(confirm("Confirm: Mark this violation record as false detection?")) { 
+            await fetch('/api/update_violation', { 
+                method: 'POST', 
+                headers: {'Content-Type':'application/json'}, 
+                body: JSON.stringify({id}) 
+            }); 
+            fetchDashboardData(); 
+        } 
+    }
+
+    async function exportExcel() {
+        try {
+            const payload = getFilterPayload();
+            const response = await fetch('/api/export_excel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            if (!data.success) {
+                alert(data.error || "Export failed");
+                return;
+            }
+            window.location.href = `/api/download_excel/${data.filename}`;
+        } catch (err) {
+            console.error(err);
+            alert("Excel export failed");
+        }
+    }
+
+    // Keyboard Arrow Navigation Support for Audit Logbook
+    document.addEventListener('keydown', function(e) {
+        if (activeTab !== 'table') return;
+
+        const rows = $('#violationsTable tbody tr');
+        if (rows.length === 0 || rows.find('td').hasClass('dataTables_empty')) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedRowIndex = Math.min(selectedRowIndex + 1, rows.length - 1);
+            highlightRow(rows);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedRowIndex = Math.max(selectedRowIndex - 1, 0);
+            highlightRow(rows);
+        } else if (e.key === 'Enter') {
+            if (selectedRowIndex >= 0) {
+                const data = dataTableInstance.row(rows[selectedRowIndex]).data();
+                if (data && data.image_url) viewImg(data.image_url);
+            }
+        }
+    });
+
+    function highlightRow(rows) {
+        rows.removeClass('focused-row');
+        if (selectedRowIndex >= 0) {
+            const target = $(rows[selectedRowIndex]);
+            target.addClass('focused-row');
+            target[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+</script>
+</body>
+</html>

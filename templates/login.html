@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | Solar Group Smart Factory</title>
+    <link rel="icon" type="image/png" href="/static/solars.png">
+
+    <!-- Montserrat Font ONLY per Smart Factory Standard -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --canvas: #f3f4f5;
+            --surface: #ffffff;
+            --surface-2: #fafbfb;
+            --ink: #212529;
+            --ink-2: #464c53;
+            --ink-3: #707070;
+            --line: #e6e8ea;
+            --brand-500: #ed1c24;
+            --brand-600: #d31017;
+            --accent-600: #1f3f80;
+            --accent-700: #1a2d5e;
+            --shadow-brand: 0 4px 14px rgba(237, 28, 36, 0.25);
+            --r-sm: 6px;
+            --r-md: 8px;
+            --r-lg: 12px;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            background: var(--canvas);
+            color: var(--ink);
+        }
+
+        /* --- LEFT SIDE: BRANDING AREA --- */
+        .brand-section {
+            width: 58%;
+            background: #0d1128;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 22px 22px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px;
+            color: white;
+            overflow: hidden;
+        }
+
+        .brand-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--brand-500);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--r-lg);
+            padding: 44px;
+            max-width: 560px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .eyebrow-accent {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #93c5fd;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .eyebrow-accent::before {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 2px;
+            background: var(--brand-500);
+            margin-right: 8px;
+            border-radius: 1px;
+        }
+
+        /* --- RIGHT SIDE: FORM AREA --- */
+        .login-section {
+            width: 42%;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 190px;
+            object-fit: contain;
+            display: block;
+            margin-bottom: 24px;
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--ink-2);
+            margin-bottom: 6px;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .form-control {
+            height: 44px;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--line);
+            padding-left: 14px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background-color: var(--surface-2);
+            color: var(--ink);
+        }
+
+        .form-control:focus {
+            background-color: #fff;
+            border-color: var(--accent-600);
+            box-shadow: 0 0 0 3px rgba(31, 63, 128, 0.12);
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            transform: translateY(-50%);
+            color: var(--ink-3);
+            cursor: pointer;
+            z-index: 10;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .password-toggle:hover { color: var(--ink); }
+
+        /* The single highest impact action button: Solar Red */
+        .btn-primary-smart {
+            height: 44px;
+            width: 100%;
+            background-color: var(--brand-600);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--r-sm);
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-brand);
+            font-family: inherit;
+        }
+        .btn-primary-smart:hover {
+            background-color: #b80d14;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .alert-custom {
+            font-size: 0.82rem;
+            border: 1px solid #f6cac6;
+            background-color: #fdf3f2;
+            color: #b42318;
+            border-radius: var(--r-sm);
+            padding: 10px 14px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
+            .brand-section { display: none; }
+            .login-section { width: 100%; background-color: var(--canvas); }
+            .login-container { background: white; padding: 32px; border-radius: var(--r-lg); border: 1px solid var(--line); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left Side: Branding -->
+    <div class="brand-section">
+        <div class="glass-panel">
+            <span class="eyebrow-accent">Solar Group Smart Factory</span>
+            <h1 class="display-6 fw-bold mb-3" style="letter-spacing: -0.02em;">Smart Safety & Vision AI</h1>
+            <p class="opacity-75 mb-4" style="font-size: 0.95rem; line-height: 1.6;">Automated PPE compliance monitoring and multi-camera telemetry powered by edge computer vision.</p>
+            <div class="d-flex gap-4 opacity-75 small">
+                <div><i class="bi bi-shield-check text-success me-2"></i>350 Live Feeds</div>
+                <div><i class="bi bi-cpu text-info me-2"></i>Edge Inferencing</div>
+                <div><i class="bi bi-bell text-warning me-2"></i>Instant Routing</div>
+            </div>
+        </div>
+        <small class="position-absolute bottom-0 start-0 p-5 opacity-50">© 2026 Solar Industries India Limited • Smart Factory Ecosystem</small>
+    </div>
+
+    <!-- Right Side: Login Form -->
+    <div class="login-section">
+        <div class="login-container">
+            <div class="text-start mb-4">
+                <!-- Unboxed, freely floating logo -->
+                <img src="/static/logo.png" alt="Solar Industries India Limited" class="logo-img" onerror="this.src='/static/solars.png'">
+                <h4 class="fw-bold text-dark mb-1">Sign in to console</h4>
+                <p class="text-muted small mb-0">Enter your credentials to access the safety monitoring portal.</p>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-custom mb-4 d-flex align-items-center">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i> {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Email address</label>
+                    <input type="email" class="form-control" name="email" placeholder="operator@solargroup.com" required>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label">Password</label>
+                        <a href="/forgot-password" class="text-decoration-none small text-primary fw-medium" style="font-size:0.75rem;">Forgot password?</a>
+                    </div>
+                    <div class="input-group-custom">
+                        <input type="password" class="form-control pe-5" name="password" id="password" placeholder="Enter password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary-smart">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        }
+    </script>
+</body>
+</html>
