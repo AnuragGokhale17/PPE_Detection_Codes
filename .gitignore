@@ -3,12 +3,9 @@
 .env.local
 .env.*.local
 
-# Large Model Weights (>100MB exceeds GitHub limit)
-*.pt
-*.pth
-*.onnx
-*.weights
-model/*.pt
+# Large Model Weights (>100MB must use Git LFS)
+model/best.pt
+
 
 # Python artifacts
 __pycache__/
