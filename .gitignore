@@ -1,13 +1,31 @@
-# Environment variables & secrets
+# Environment variables & secrets (commit only the *.example files)
 .env
 .env.local
 .env.*.local
+backend/.env
+frontend/.env*
+!.env.example
+!backend/.env.example
+!frontend/.env.example
 
-# Large Model Weights (>100MB must use Git LFS)
+# Model weights: best12classes.pt is tracked with Git LFS; everything else stays on the server
 model/best.pt
+model/versions/
+*.onnx
+*.engine
 
+# Runtime data written by the API and workers
+var/
+saved_violations/
+retraining_dataset/
+training/
+*.log
 
-# Python artifacts
+# Offline deployment bundles (deploy/build_offline_bundle.py)
+dist/
+wheelhouse/
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -15,9 +33,25 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 ENV/
 env.bak/
 venv.bak/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
 
 # IDE & OS files
 .vscode/

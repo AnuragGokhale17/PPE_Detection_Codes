@@ -8,7 +8,6 @@ from email.mime.text import MIMEText
 from datetime import datetime
 from dotenv import load_dotenv
 import socket
-import smtplib
 
 # --- ADD THIS SNIPPET TO FIX THE ERROR ---
 orig_getaddrinfo = socket.getaddrinfo
@@ -35,6 +34,7 @@ DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
 DB_NAME = os.getenv("DB_NAME")
+DB_PORT = os.getenv("DB_PORT", "5432")
 
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = int(os.getenv("SMTP_PORT"))
@@ -98,15 +98,25 @@ HTML_TEMPLATE = """
 """
 
 def connect_to_db():
-    return spg.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS, port='5432')
+    return spg.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS, port=DB_PORT)
 
 def fetch_inactive_cameras():
+    """Offline cameras that are still configured and enabled in the portal."""
     logger.info("Connecting to database to fetch offline cameras...")
     con = None
     try:
         con = connect_to_db()
         with con.cursor() as cur:
-            cur.execute("SELECT plant, production_house, area, rtsp_link FROM camera_health WHERE status = false;")
+            cur.execute("""
+                SELECT ch.plant, ch.production_house, ch.area, ch.rtsp_link
+                FROM camera_health ch
+                JOIN cameras c ON c.enabled
+                JOIN production_houses ph ON ph.id = c.production_house_id
+                JOIN plants p ON p.id = ph.plant_id
+                WHERE ch.status = false
+                  AND ch.camera_id = p.name || '_' || ph.name || '_' || c.area
+                ORDER BY ch.production_house, ch.area;
+            """)
             rows = cur.fetchall()
             logger.info(f"Database query successful. Found {len(rows)} offline cameras.")
             return rows or []
@@ -115,6 +125,40 @@ def fetch_inactive_cameras():
         return []
     finally:
         if con: con.close()
+
+def fetch_recipients():
+    """Daily digest recipients from alert_recipients (channel 'camera_health'), managed in the portal."""
+    recipients = {"to": [], "cc": [], "bcc": []}
+    con = None
+    try:
+        con = connect_to_db()
+        with con.cursor() as cur:
+            cur.execute(
+                "SELECT email, kind FROM alert_recipients WHERE channel = 'camera_health' ORDER BY id;"
+            )
+            for email, kind in cur.fetchall():
+                recipients.setdefault(kind, []).append(email)
+    except Exception as e:
+        logger.error(f"DATABASE ERROR while loading recipients: {e}")
+    finally:
+        if con: con.close()
+    return recipients["to"], recipients["cc"], recipients["bcc"]
+
+def fetch_pause_reason():
+    """Returns the pause reason while inference is paused (e.g. for retraining), else None."""
+    con = None
+    try:
+        con = connect_to_db()
+        with con.cursor() as cur:
+            cur.execute("SELECT inference_paused, pause_reason FROM runtime_state WHERE id = 1;")
+            row = cur.fetchone()
+            if row and row[0]:
+                return row[1] or "paused by an administrator"
+    except Exception as e:
+        logger.error(f"DATABASE ERROR while reading runtime state: {e}")
+    finally:
+        if con: con.close()
+    return None
 
 def send_email(subject, html_body, to_recipients, cc_recipients, bcc_recipients):
     all_recipients = to_recipients + cc_recipients + bcc_recipients
@@ -126,7 +170,7 @@ def send_email(subject, html_body, to_recipients, cc_recipients, bcc_recipients)
     message["From"] = SENDER_EMAIL
     message["To"] = ", ".join(to_recipients)
     message["Cc"] = ", ".join(cc_recipients)
-    message["Bcc"] = ", ".join(bcc_recipients)
+    # BCC recipients go in the SMTP envelope only, never in the headers
 
     try:
         logger.info(f"Connecting to SMTP server {SMTP_SERVER}...")
@@ -138,9 +182,19 @@ def send_email(subject, html_body, to_recipients, cc_recipients, bcc_recipients)
     except Exception as e:
         logger.error(f"❌ SMTP ERROR: {e}")
 
-def run_report_logic(to_recipients, cc_recipients):
+def run_report_logic():
     logger.info("--- STARTING REPORT GENERATION LOGIC ---")
+    # Read on every run so recipient changes in the portal apply without a restart
+    to_recipients, cc_recipients, bcc_recipients = fetch_recipients()
+    if not to_recipients:
+        logger.warning("No camera-health recipients configured (portal: Configuration -> Alert recipients). Skipping report.")
+        return
     inactive_data = fetch_inactive_cameras()
+    pause_reason = fetch_pause_reason()
+    pause_note = (
+        f"<br><em>Note: inference is currently paused ({pause_reason}); statuses are from before the pause.</em>"
+        if pause_reason else ""
+    )
     now = datetime.now()
     timestamp_str = now.strftime("%B %d, %Y at %I:%M %p")
     
@@ -150,7 +204,7 @@ def run_report_logic(to_recipients, cc_recipients):
         html_content = HTML_TEMPLATE.format(
             accent_color="#2e7d32", card_bg="#e8f5e9",
             status_title="SYSTEM OPERATIONAL",
-            status_message="All PPE monitoring cameras are currently verified as ONLINE.",
+            status_message="All PPE monitoring cameras are currently verified as ONLINE." + pause_note,
             table_content="<div style='text-align:center; padding:30px; color:#2e7d32; font-weight:bold;'>✔ No network issues detected.</div>",
             timestamp=timestamp_str
         )
@@ -186,7 +240,7 @@ def run_report_logic(to_recipients, cc_recipients):
         html_content = HTML_TEMPLATE.format(
             accent_color="#d32f2f", card_bg="#ffebee",
             status_title="ACTION REQUIRED: OFFLINE CAMERAS",
-            status_message=f"The following {len(inactive_data)} units were unreachable during the scheduled health check.",
+            status_message=f"The following {len(inactive_data)} units were unreachable during the scheduled health check." + pause_note,
             table_content=table_html, 
             timestamp=timestamp_str
         )
@@ -195,22 +249,13 @@ def run_report_logic(to_recipients, cc_recipients):
     logger.info("--- REPORT LOGIC COMPLETED ---")
 
 if __name__ == '__main__':
-    to_recipients = ["py10919@solargroup.com", "alkesh.dodke@solargroup.com", "umesh.meshram@solargroup.com", "satish.bhajane@solargroup.com"]
-    cc_recipients = [
-        "hemant.tepale@solargroup.com", "sujay.kumar@solargroup.com", "paresh.tripathi@solargroup.com", "sachin.jamgade@solargroup.com", "nitin.gaikwad@solargroup.com"
-    ]
-    bcc_recipients = [
-        "lalit.bopche@solargroup.com", "anurag.gokhale@solargroup.com", "saimadhu.muthyala@solargroup.com", 
-        "ayush.shirbhate@solargroup.com", "rashi.channawar@solargroup.com",
-        "avantika.malgewar@solargroup.com", "jay.jogi@solargroup.com"
-    ]
-
+    # Recipients are managed in the portal (alert_recipients, channel 'camera_health')
     logger.info("Mailing Service Initialized.")
     logger.info(f"DB Host: {DB_HOST} | User: {DB_USER}")
     
     if TEST_MODE:
         logger.info("TEST_MODE IS ACTIVE: Bypassing timer to send report immediately...")
-        run_report_logic(to_recipients, cc_recipients)
+        run_report_logic()
 
     last_sent_date = datetime.now().date() if TEST_MODE else None
 
@@ -224,7 +269,7 @@ if __name__ == '__main__':
 
         if now.hour == 10 and last_sent_date != now.date():
             logger.info("Target time 10:00 AM reached. Initiating daily health report...")
-            run_report_logic(to_recipients, cc_recipients)
+            run_report_logic()
             last_sent_date = now.date()
         
         time.sleep(30) # Check more frequently to ensure we hit the 10:00 AM window

@@ -1,0 +1,719 @@
+{
+  "violation": {
+    "BULK": {
+      "to": [
+        "vaibhav.indurkar@solargroup.com",
+        "incharge.cob@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "CBH3": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "CBH4": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "CBH5": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "CBH6": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "CBH7": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "COB": {
+      "to": [
+        "vaibhav.indurkar@solargroup.com",
+        "incharge.cob@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "DF-01": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "DF02": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "DF03": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "DISTILLATION": {
+      "to": [
+        "sandip.bhendarkar@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "GB": {
+      "to": [
+        "sandip.bhendarkar@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "GB-02": {
+      "to": [
+        "sandip.bhendarkar@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "GB-03": {
+      "to": [
+        "sandip.bhendarkar@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "HRCPCH-01": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "HRCPCH-02": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "MEEP": {
+      "to": [
+        "sandesh.sakhare@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-01": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-10": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-02": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-03": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-04": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-05": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-06": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-07": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PD-08": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-01": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-02": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-03": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-04": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-05": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-06": {
+      "to": [
+        "sandip.bhendarkar@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-07": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-09": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-08": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-10": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-11": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-12": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-14": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "sachin.pokale@solargroup.com",
+        "shift.inchargeacce@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-15": {
+      "to": [
+        "sandip.bhendarkar@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-16": {
+      "to": [
+        "avinash.kambale@solargroup.com",
+        "sai.viswanathan@solargroup.com",
+        "sarvesh.tripathi@solargroup.com",
+        "umesh.kubade@solargroup.com",
+        "shift.incharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-18": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "manish.garade@solargroup.com",
+        "suchit.bakade@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-19": {
+      "to": [
+        "sandip.bhendarkar@solargroup.com",
+        "atish.padole@solargroup.com",
+        "suresh.chikte@solargroup.com",
+        "hilltop.shiftincharge@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "SL-03": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "SL-04": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "SL-05": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "SMO": {
+      "to": [
+        "vaibhav.indurkar@solargroup.com",
+        "incharge.cob@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "SN-01": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "sn1@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "SN-02": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "sn1@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "SN-03": {
+      "to": [
+        "pawan.hiwase@solargroup.com",
+        "yogesh.mishra@solargroup.com",
+        "prakash.baid@solargroup.com",
+        "sn1@solargroup.com",
+        "shift.inchargedet@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-20": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "manish.garade@solargroup.com",
+        "suchit.bakade@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    },
+    "PP-21": {
+      "to": [
+        "pankaj.patil@solargroup.com",
+        "pawan.hiwase@solargroup.com",
+        "manish.garade@solargroup.com",
+        "suchit.bakade@solargroup.com"
+      ],
+      "cc": [
+        "sujay.kumar@solargroup.com",
+        "sandip.bhendarkar@solargroup.com",
+        "jay.jogi@solargroup.com"
+      ]
+    }
+  },
+  "camera_health": {
+    "to": [
+      "py10919@solargroup.com",
+      "alkesh.dodke@solargroup.com",
+      "umesh.meshram@solargroup.com",
+      "satish.bhajane@solargroup.com"
+    ],
+    "cc": [
+      "hemant.tepale@solargroup.com",
+      "sujay.kumar@solargroup.com",
+      "paresh.tripathi@solargroup.com",
+      "sachin.jamgade@solargroup.com",
+      "nitin.gaikwad@solargroup.com"
+    ],
+    "bcc": [
+      "lalit.bopche@solargroup.com",
+      "anurag.gokhale@solargroup.com",
+      "saimadhu.muthyala@solargroup.com",
+      "ayush.shirbhate@solargroup.com",
+      "rashi.channawar@solargroup.com",
+      "avantika.malgewar@solargroup.com",
+      "jay.jogi@solargroup.com"
+    ]
+  },
+  "designations": {
+    "avinash.kambale@solargroup.com": "Slurry / Emulsion",
+    "nikhil.bhatti@solargroup.com": "Hill Top",
+    "pawan.hiwase@solargroup.com": "S Series",
+    "vaibhav.indurkar@solargroup.com": "Bulk & Chemical",
+    "pankaj.patil@solargroup.com": "PETN / TNT / PD / CBH",
+    "sandesh.sakhare@solargroup.com": "MEEP"
+  }
+}

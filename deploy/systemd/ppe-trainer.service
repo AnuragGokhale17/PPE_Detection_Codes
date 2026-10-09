@@ -1,0 +1,16 @@
+[Unit]
+Description=PPE model trainer (runs queued training jobs; pauses inference while it trains)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=administrator
+WorkingDirectory=/home/administrator/PPEsDetection
+ExecStart=/home/administrator/PPEsDetection/venv/bin/python trainer.py
+# A stop during a run marks it failed and resumes inference
+TimeoutStopSec=120
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

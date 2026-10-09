@@ -1,0 +1,14 @@
+# GPU-server workers: inference.py, trainer.py, cooldown.py, camera_status_mail.py
+# Separate venv from backend/ (the API). Python 3.10+.
+#
+# Install PyTorch for the server's CUDA first (A40, CUDA 12.x), e.g.:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# then:
+#   pip install -r requirements-workers.txt
+ultralytics>=8.3
+opencv-python>=4.8
+numpy>=1.24
+psycopg2-binary>=2.9
+boto3>=1.34
+python-dotenv>=1.0
+requests>=2.31

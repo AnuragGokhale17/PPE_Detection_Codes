@@ -8,493 +8,133 @@ import os
 # 3. buffer_size 1MB: prevents packet drops across industrial switches with 350 cameras
 os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|stimeout;5000000|buffer_size;1024000"
 
-from concurrent.futures import ThreadPoolExecutor
-from collections import defaultdict
-from contextlib import contextmanager
-import cv2
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from ultralytics import YOLO
+import argparse
+import gc
+import logging
+import random
+import signal
 import threading
 import time
-import boto3
-import psycopg2 as spg
-from psycopg2 import pool
+from collections import defaultdict, deque
 from datetime import datetime
-import json
-import torch
-import cProfile
-import pstats
-from io import StringIO
+
+import cv2
 import numpy as np
-import random
-from dotenv import load_dotenv
-from urllib.parse import quote_plus
-from pathlib import Path
-import argparse
+import torch
+import urllib3
+from ultralytics import YOLO
 
-# Load environment variables
-load_dotenv()
+import worker_common as wc
+from worker_logic import (
+    FRAME_H,
+    FRAME_W,
+    ClassRegistry,
+    build_camera_specs,
+    classify_detections,
+    detections_payload,
+    diff_camera_specs,
+    event_image_id,
+    event_image_keys,
+    local_image_url,
+    public_image_url,
+    summarize_event,
+)
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+log = logging.getLogger("inference")
 
 # ==============================================================================
-# MODEL CONFIGURATION & CROSS-PLATFORM PATH RESOLUTION
+# RUNTIME SETTINGS (.env)
 # ==============================================================================
-# Prioritize best12classes.pt for positive and negative multi-class inference
-DEFAULT_MODEL_PATH = os.getenv("MODEL_PATH", "model/best12classes.pt")
-
-
-def resolve_model_path(specified_path=None):
-    """
-    Resolves the YOLO model weights path cross-platform (Windows & Ubuntu Linux).
-    Checks specified path, MODEL_PATH env, script directory, and standard fallbacks.
-    """
-    candidates = []
-    if specified_path:
-        candidates.append(Path(specified_path))
-    if os.getenv("MODEL_PATH"):
-        candidates.append(Path(os.getenv("MODEL_PATH")))
-
-    candidates.extend([
-        Path(dir_path) / "model" / "best12classes.pt",
-        Path("model/best12classes.pt"),
-        Path("PPEsDetection/model/best12classes.pt"),
-        Path(dir_path) / "best12classes.pt",
-        Path(dir_path) / "model" / "best.pt",
-        Path("model/best.pt"),
-    ])
-
-    for candidate in candidates:
-        if candidate and candidate.exists():
-            return str(candidate.resolve())
-
-    # Return default fallback path
-    return specified_path or str(Path(dir_path) / "model" / "best12classes.pt")
+CHECK_INTERVAL = wc.env_float("CHECK_INTERVAL_SECONDS", 60)  # one frame per camera per interval
+EVENT_COOLDOWN = wc.env_float("EVENT_COOLDOWN_SECONDS", 3600)  # one event per area per hour
+CONFIG_POLL = wc.env_float("CONFIG_POLL_SECONDS", 30)  # runtime_state polling
+PREDICT_CONF = wc.env_float("PREDICT_CONF", 0.25)  # low, so reviewers see near-misses too
+STARTUP_STAGGER = wc.env_float("STARTUP_STAGGER_SECONDS", 35)
+PUBLIC_IMAGE_BASE = os.getenv("PUBLIC_IMAGE_BASE", "https://ppes-siil.solargroup.com:9000")
+BUCKET_NAME = os.getenv("BUCKET_NAME", "mybucket")
 
 
 # ==============================================================================
-# 12-CLASS MAPPINGS (6 Positive Compliant + 6 Negative Violation Classes)
+# CONFIGURATION FROM POSTGRESQL (replaces camera_list_*.json)
 # ==============================================================================
-# 0: Gloves, 1: Goggles, 2: Helmet, 3: Mask, 4: No Gloves, 5: No Goggles,
-# 6: No Helmet, 7: No Mask, 8: No Shoes, 9: No Suit, 10: Shoes, 11: Suit
-YAML_CLASS_NAMES = {
-    0: 'Gloves',
-    1: 'Goggles',
-    2: 'Helmet',
-    3: 'Mask',
-    4: 'No Gloves',
-    5: 'No Goggles',
-    6: 'No Helmet',
-    7: 'No Mask',
-    8: 'No Shoes',
-    9: 'No Suit',
-    10: 'Shoes',
-    11: 'Suit'
-}
+CAMERA_SQL = """
+    SELECT c.id, p.name, ph.name, c.area, c.stream_url, c.scale_up, pi.key
+    FROM cameras c
+    JOIN production_houses ph ON ph.id = c.production_house_id
+    JOIN plants p ON p.id = ph.plant_id
+    LEFT JOIN camera_ppe cp ON cp.camera_id = c.id
+    LEFT JOIN ppe_items pi ON pi.id = cp.ppe_item_id AND pi.enabled
+    WHERE c.enabled
+    ORDER BY c.id
+"""
 
-# Standardized class metadata mapping: canonical key -> display name, base PPE item, violation flag
-CLASS_METADATA = {
-    # Compliant (Positive) classes -> Emerald Green
-    "gloves": {"display": "Gloves", "base_item": "gloves", "is_violation": False},
-    "goggles": {"display": "Goggles", "base_item": "goggles", "is_violation": False},
-    "helmet": {"display": "Helmet", "base_item": "helmet", "is_violation": False},
-    "mask": {"display": "Mask", "base_item": "mask", "is_violation": False},
-    "shoes": {"display": "Shoes", "base_item": "shoes", "is_violation": False},
-    "suit": {"display": "Suit", "base_item": "suit", "is_violation": False},
-    # Non-Compliant / Violation (Negative) classes -> Alert Crimson Red
-    "no_gloves": {"display": "No Gloves", "base_item": "gloves", "is_violation": True},
-    "no_glove": {"display": "No Gloves", "base_item": "gloves", "is_violation": True},
-    "no_goggles": {"display": "No Goggles", "base_item": "goggles", "is_violation": True},
-    "no_helmet": {"display": "No Helmet", "base_item": "helmet", "is_violation": True},
-    "no_mask": {"display": "No Mask", "base_item": "mask", "is_violation": True},
-    "no_shoes": {"display": "No Shoes", "base_item": "shoes", "is_violation": True},
-    "no_suit": {"display": "No Suit", "base_item": "suit", "is_violation": True}
-}
-
-BASE_PPE_DISPLAY = {
-    "helmet": "Helmet",
-    "gloves": "Gloves",
-    "shoes": "Shoes",
-    "mask": "Mask",
-    "goggles": "Goggles",
-    "suit": "Suit"
-}
+CLASS_SQL = """
+    SELECT mc.class_id, mc.name, mc.is_violation, mc.threshold, pi.key, pi.display_name
+    FROM model_classes mc
+    LEFT JOIN ppe_items pi ON pi.id = mc.ppe_item_id
+    WHERE mc.enabled
+    ORDER BY mc.class_id
+"""
 
 
-def normalize_class_name(name):
-    """Normalizes class string into metadata dictionary key."""
-    s = str(name).strip().lower().replace(" ", "_")
-    if s == "glove": s = "gloves"
-    elif s == "shoe": s = "shoes"
-    elif s == "goggle": s = "goggles"
-    elif s == "no_glove": s = "no_gloves"
-    elif s == "no_shoe": s = "no_shoes"
-    elif s == "no_goggle": s = "no_goggles"
-    return s
+def load_config(pool):
+    """Returns (camera specs by id, class registry) from the configuration tables."""
+    with pool.connection() as conn:
+        if conn is None:
+            raise RuntimeError("Database unavailable")
+        with conn.cursor() as cur:
+            cur.execute("SELECT key, display_name FROM ppe_items WHERE enabled ORDER BY sort_order, id")
+            ppe_rows = cur.fetchall()
+            cur.execute(CLASS_SQL)
+            class_rows = cur.fetchall()
+            cur.execute(CAMERA_SQL)
+            camera_rows = cur.fetchall()
+        conn.commit()
+    registry = ClassRegistry.from_rows(class_rows, ppe_rows)
+    specs = build_camera_specs(camera_rows, [k for k, _ in ppe_rows])
+    return specs, registry
 
 
-def get_base_ppe_item(name):
-    """Extracts base PPE item (e.g. 'helmet', 'gloves', 'shoes', 'mask', 'goggles', 'suit')."""
-    norm = normalize_class_name(name)
-    if norm.startswith("no_"):
-        norm = norm[3:]
-    if norm in ("glove", "gloves"): return "gloves"
-    if norm in ("shoe", "shoes"): return "shoes"
-    if norm in ("goggle", "goggles"): return "goggles"
-    if norm == "helmet": return "helmet"
-    if norm == "mask": return "mask"
-    if norm == "suit": return "suit"
-    return norm
-
-
-def is_violation_class(name):
-    """Returns True if class represents a violation (non-compliance)."""
-    norm = str(name).strip().lower().replace("_", " ")
-    return norm.startswith("no ") or norm.startswith("no_")
-
-
-def get_required_ppe_items(ppe_list):
-    """
-    Extracts set of base required PPE items for an area from camera configuration's ppeList.
-    Supports negative identifiers ("no_helmet", "no_glove") and positive identifiers ("helmet", "gloves").
-    Defaults to all 6 monitored PPE types if empty or unconfigured.
-    """
-    all_standard = {"helmet", "gloves", "shoes", "mask", "goggles", "suit"}
-    if not ppe_list:
-        return all_standard
-
-    required = set()
-    for item in ppe_list:
-        base = get_base_ppe_item(item)
-        if base in all_standard:
-            required.add(base)
-    return required if required else all_standard
+def load_model_path(pool, model_id):
+    with pool.connection() as conn:
+        if conn is None:
+            raise RuntimeError("Database unavailable")
+        with conn.cursor() as cur:
+            cur.execute("SELECT weights_path FROM model_versions WHERE id = %s", (model_id,))
+            row = cur.fetchone()
+        conn.commit()
+    if not row:
+        raise RuntimeError(f"model_versions row {model_id} not found")
+    return wc.resolve_repo_path(row[0])
 
 
 # ==============================================================================
-# S3 STORAGE INFRASTRUCTURE
+# CAMERA HEALTH (camera_health upserts, edge-triggered with a 5 min keepalive)
 # ==============================================================================
-bucket_name = os.getenv('BUCKET_NAME')
-s3_endpoint_url = os.getenv('S3_ENDPOINT_URL')
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-
-s3 = None
-try:
-    if s3_endpoint_url and aws_access_key_id and aws_secret_access_key:
-        s3 = boto3.client(
-            's3',
-            endpoint_url=s3_endpoint_url,
-            aws_access_key_id=aws_access_key_id,
-            aws_secret_access_key=aws_secret_access_key,
-            verify=False
-        )
-except Exception as e:
-    print(f"S3 client initialization note: {e}")
-
-
-def save_image_to_s3(bucket, object_name, image_data):
-    """Saves annotated image to MinIO S3 storage with local fallback."""
-    if s3 is None or not bucket:
-        local_dir = Path(dir_path) / "saved_violations"
-        local_dir.mkdir(exist_ok=True)
-        local_path = local_dir / object_name
-        with open(local_path, "wb") as f:
-            f.write(image_data)
-        return str(local_path)
-    try:
-        current_month_name = datetime.now().strftime("%B").lower()
-        object_path_with_month = current_month_name + "/" + object_name
-        s3.put_object(
-            Bucket=bucket,
-            Key=object_path_with_month,
-            Body=image_data
-        )
-        return object_path_with_month
-    except Exception as e:
-        print(f"S3 upload error: {e}")
-        local_dir = Path(dir_path) / "saved_violations"
-        local_dir.mkdir(exist_ok=True)
-        local_path = local_dir / object_name
-        with open(local_path, "wb") as f:
-            f.write(image_data)
-        return str(local_path)
-
-
-# ==============================================================================
-# DATABASE CONNECTION POOLING (ELIMINATES DB CONNECTION EXHAUSTION ON 350 CAMERAS)
-# ==============================================================================
-db_pool = None
-db_pool_lock = threading.Lock()
-
-
-def init_db_pool():
-    """
-    Initializes a centralized ThreadedConnectionPool.
-    Caps open PostgreSQL connections to max 20, completely eliminating
-    'FATAL: sorry, too many clients already' when running 350 cameras.
-    """
-    global db_pool
-    with db_pool_lock:
-        if db_pool is not None and not getattr(db_pool, 'closed', False):
-            return db_pool
-
-        db_host = os.getenv("DB_HOST", "localhost")
-        db_user = os.getenv("DB_USER", "postgres")
-        db_pass = os.getenv("DB_PASS", "IIOTDARTarPPE")
-        db_port = os.getenv("DB_PORT", "5432")
-        db_name = os.getenv("DB_NAME", "ppes")
-
-        try:
-            db_pool = pool.ThreadedConnectionPool(
-                minconn=2,
-                maxconn=20,
-                host=db_host,
-                database=db_name,
-                user=db_user,
-                password=db_pass,
-                port=db_port,
-                connect_timeout=5
-            )
-            print("PostgreSQL ThreadedConnectionPool initialized (maxconn=20 shared across all cameras).")
-            return db_pool
-        except Exception as e:
-            print(f"DATABASE POOL INITIALIZATION NOTICE: {e}")
-            db_pool = None
-            return None
-
-
-@contextmanager
-def get_db_connection():
-    """
-    Thread-safe context manager to lease a connection from the pool and
-    guarantee its return upon block exit.
-    """
-    global db_pool
-    if db_pool is None or getattr(db_pool, 'closed', False):
-        init_db_pool()
-
-    conn = None
-    leased_from_pool = False
-
-    if db_pool:
-        try:
-            conn = db_pool.getconn()
-            leased_from_pool = True
-        except Exception as e:
-            print(f"Connection pool leasing notice: {e}")
-            conn = None
-
-    # Fallback to direct connection if pool is temporarily exhausted
-    if conn is None:
-        try:
-            db_host = os.getenv("DB_HOST", "localhost")
-            db_user = os.getenv("DB_USER", "postgres")
-            db_pass = os.getenv("DB_PASS", "IIOTDARTarPPE")
-            db_port = os.getenv("DB_PORT", "5432")
-            db_name = os.getenv("DB_NAME", "ppes")
-            conn = spg.connect(
-                host=db_host, database=db_name, user=db_user,
-                password=db_pass, port=db_port, connect_timeout=5
-            )
-            leased_from_pool = False
-        except Exception as e:
-            print(f"Database connection error: {e}")
-            yield None
-            return
-
-    try:
-        yield conn
-    finally:
-        if leased_from_pool and db_pool and conn:
-            try:
-                db_pool.putconn(conn)
-            except Exception:
-                try: conn.close()
-                except: pass
-        elif not leased_from_pool and conn:
-            try: conn.close()
-            except: pass
-
-
-def create_table_if_not_exists(cur):
-    """
-    Initializes PostgreSQL tables and ensures extended analytics columns exist.
-    Executed ONCE at startup in the main thread to prevent DDL lock contention.
-    """
-    if cur is None:
-        return
-    create_table_sql = """
-    CREATE TABLE IF NOT EXISTS ppes (
-        id SERIAL PRIMARY KEY,
-        class1 TEXT,
-        production_house TEXT,
-        camera_unit TEXT,
-        date1 date,
-        time1 time,
-        image_url TEXT,
-        area TEXT,
-        camera_status BOOLEAN DEFAULT TRUE,
-        violation BOOLEAN DEFAULT TRUE,
-        violations TEXT,
-        compliance TEXT,
-        violation_count INTEGER DEFAULT 0,
-        compliance_count INTEGER DEFAULT 0,
-        people_count INTEGER DEFAULT 0,
-        violator_count INTEGER DEFAULT 0,
-        required_ppes TEXT
-    );
-    """
-    try:
-        cur.execute(create_table_sql)
-        # Ensure extended analytics columns exist on pre-existing deployment databases
-        columns_to_ensure = [
-            ("violation", "BOOLEAN DEFAULT TRUE"),
-            ("violations", "TEXT"),
-            ("compliance", "TEXT"),
-            ("violation_count", "INTEGER DEFAULT 0"),
-            ("compliance_count", "INTEGER DEFAULT 0"),
-            ("people_count", "INTEGER DEFAULT 0"),
-            ("violator_count", "INTEGER DEFAULT 0"),
-            ("required_ppes", "TEXT"),
-        ]
-        for col_name, col_def in columns_to_ensure:
-            try:
-                cur.execute(f"ALTER TABLE ppes ADD COLUMN IF NOT EXISTS {col_name} {col_def};")
-            except Exception:
-                pass
-
-        # Ensure camera_health table exists for dashboard and health alerting
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS camera_health (
-                camera_id TEXT PRIMARY KEY,
-                plant TEXT,
-                production_house TEXT,
-                area TEXT,
-                rtsp_link TEXT,
-                status BOOLEAN,
-                last_checked TIMESTAMP
-            );
-        """)
-    except Exception as e:
-        print(f"Error checking/creating table: {e}")
-
-
-def insert_single_violation_record(
-    production_house,
-    ip_address,
-    date1,
-    time1,
-    image_url,
-    area_type,
-    violations_str,
-    compliance_str,
-    violation_count,
-    compliance_count,
-    people_count,
-    violator_count,
-    required_ppes_str
-):
-    """
-    Inserts EXACTLY ONE ROW per violation image event into PostgreSQL using pooled connections.
-    Consolidates all violations, compliances, people count, violator count,
-    and required PPEs into that single row.
-    """
-    class1_str = violations_str if violations_str else "Compliant"
-
-    with get_db_connection() as con:
-        if con is None:
-            print("[DB ERROR] Cannot record violation: Database connection unavailable.")
-            return
-
-        try:
-            with con.cursor() as cur:
-                try:
-                    # Primary insert with extended analytics columns
-                    cur.execute("""
-                        INSERT INTO ppes (
-                            class1, production_house, camera_unit,
-                            date1, time1, image_url, area,
-                            camera_status, violation, violations, compliance,
-                            violation_count, compliance_count, people_count,
-                            violator_count, required_ppes
-                        )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-                    """, (
-                        class1_str,
-                        production_house,
-                        ip_address,
-                        date1,
-                        time1,
-                        image_url,
-                        area_type,
-                        True,
-                        True,
-                        violations_str,
-                        compliance_str,
-                        violation_count,
-                        compliance_count,
-                        people_count,
-                        violator_count,
-                        required_ppes_str
-                    ))
-                    con.commit()
-                    print(f"[DB LOGGED (Single Row)] Violations: {violations_str} | Compliance: {compliance_str} | People: {people_count} | Violators: {violator_count}")
-                except Exception:
-                    con.rollback()
-                    # Fallback to standard schema columns if custom columns fail
-                    cur.execute("""
-                        INSERT INTO ppes (
-                            class1, production_house, camera_unit,
-                            date1, time1, image_url, area
-                        )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s);
-                    """, (
-                        class1_str,
-                        production_house,
-                        ip_address,
-                        date1,
-                        time1,
-                        image_url,
-                        area_type
-                    ))
-                    con.commit()
-                    print(f"[DB LOGGED (Single Row, Standard Schema)] {class1_str}")
-        except Exception as db_err:
-            try: con.rollback()
-            except Exception: pass
-            print(f"[DB ERROR] Failed to record violation: {db_err}")
-
-
-# In-memory status cache to enable edge-triggered camera status updates
 camera_status_cache = {}
 camera_status_lock = threading.Lock()
 
 
-def update_camera_status(plant, production_house, area_type, stream_link="", status=False):
-    """
-    Maintains real-time camera health in PostgreSQL table `camera_health`.
-    Eliminates the need for a separate camera_monitoring.py process, cutting
-    network bandwidth in half and preventing stream collisions.
-    Uses edge-triggering + periodic keepalive heartbeat (every 5 min) to prevent DB spam.
-    """
-    camera_id = f"{plant}_{production_house}_{area_type}"
+def update_camera_status(pool, spec, status):
+    """Maintains camera_health for the dashboard and the daily digest. Only writes when the
+    status changes or the last write is older than 5 minutes."""
     now_ts = time.time()
-
     with camera_status_lock:
-        prev_entry = camera_status_cache.get(camera_id)
-        # If status unchanged AND updated within the last 5 minutes (300s), skip write
-        if prev_entry and prev_entry.get("status") == status and (now_ts - prev_entry.get("time", 0)) < 300:
+        prev = camera_status_cache.get(spec.health_id)
+        if prev and prev["status"] == status and now_ts - prev["time"] < 300:
             return
-        camera_status_cache[camera_id] = {"status": status, "time": now_ts}
+        camera_status_cache[spec.health_id] = {"status": status, "time": now_ts}
 
-    with get_db_connection() as con:
+    with pool.connection() as con:
         if con is None:
             return
         try:
             with con.cursor() as cur:
-                cur.execute("""
+                cur.execute(
+                    """
                     INSERT INTO camera_health (camera_id, plant, production_house, area, rtsp_link, status, last_checked)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (camera_id) DO UPDATE SET
@@ -504,11 +144,86 @@ def update_camera_status(plant, production_house, area_type, stream_link="", sta
                         plant = EXCLUDED.plant,
                         production_house = EXCLUDED.production_house,
                         area = EXCLUDED.area;
-                """, (camera_id, plant, production_house, area_type, stream_link, status, datetime.now()))
+                    """,
+                    (spec.health_id, spec.plant, spec.production_house, spec.area, spec.stream_url, status, datetime.now()),
+                )
             con.commit()
         except Exception:
-            try: con.rollback()
-            except: pass
+            try:
+                con.rollback()
+            except Exception:
+                pass
+
+
+def forget_camera_health(pool, health_id):
+    """A camera removed, disabled or renamed in the portal should not linger as online/offline."""
+    with camera_status_lock:
+        camera_status_cache.pop(health_id, None)
+    with pool.connection() as con:
+        if con is None:
+            return
+        try:
+            with con.cursor() as cur:
+                cur.execute("DELETE FROM camera_health WHERE camera_id = %s", (health_id,))
+            con.commit()
+        except Exception:
+            con.rollback()
+
+
+# ==============================================================================
+# EVENT RECORDING (exactly one ppes row per violation image)
+# ==============================================================================
+def insert_event_record(pool, spec, now, image_url, summary, people_count, violator_count,
+                        required_ppes_str, raw_image_key, detections, model_version_id):
+    from psycopg2.extras import Json
+
+    date1, time1 = now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
+    class1_str = summary["violations_str"] or "Compliant"
+    with pool.connection() as con:
+        if con is None:
+            log.error("[DB ERROR] Cannot record violation: database unavailable.")
+            return
+        try:
+            with con.cursor() as cur:
+                try:
+                    cur.execute(
+                        """
+                        INSERT INTO ppes (
+                            class1, production_house, camera_unit, date1, time1, image_url, area,
+                            camera_status, violation, violations, compliance,
+                            violation_count, compliance_count, people_count, violator_count, required_ppes,
+                            camera_id, raw_image_key, detections, frame_width, frame_height, model_version_id
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                                  %s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            class1_str, spec.production_house, spec.ip_address, date1, time1, image_url, spec.area,
+                            True, True, summary["violations_str"], summary["compliance_str"],
+                            summary["violation_count"], summary["compliance_count"], people_count, violator_count,
+                            required_ppes_str,
+                            spec.id, raw_image_key, Json(detections), FRAME_W, FRAME_H, model_version_id,
+                        ),
+                    )
+                    con.commit()
+                    return
+                except Exception as e:
+                    con.rollback()
+                    log.warning("v2 insert failed (%s); falling back to the legacy columns.", e)
+                # Fallback for a database without the v2 migration
+                cur.execute(
+                    """
+                    INSERT INTO ppes (class1, production_house, camera_unit, date1, time1, image_url, area)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (class1_str, spec.production_house, spec.ip_address, date1, time1, image_url, spec.area),
+                )
+                con.commit()
+        except Exception as db_err:
+            try:
+                con.rollback()
+            except Exception:
+                pass
+            log.error("[DB ERROR] Failed to record violation: %s", db_err)
 
 
 # ==============================================================================
@@ -701,7 +416,8 @@ def draw_translucent_index(
     detected_compliances,
     total_people,
     violating_people,
-    all_boxes
+    all_boxes,
+    ppe_display
 ):
     """
     Renders a translucent, high-aesthetic HUD index card on the frame.
@@ -709,7 +425,7 @@ def draw_translucent_index(
     Displays:
       - Location & Timestamp
       - Metric statistics: People count, Violators count, Violation count, Compliance count
-      - Required PPEs in that area with real-time status indicators
+      - Required PPEs in that area with real-time status indicators (labels from ppe_items)
       - Summary of active violations
     """
     h_img, w_img = image.shape[:2]
@@ -812,7 +528,7 @@ def draw_translucent_index(
     pad = 5
 
     for base_item in sorted(list(required_base_items)):
-        disp = BASE_PPE_DISPLAY.get(base_item, base_item.capitalize())
+        disp = ppe_display.get(base_item, base_item.capitalize())
         if base_item in violation_items:
             tag_status = f"[!] {disp}"
             tag_bg = (30, 25, 160)
@@ -862,449 +578,428 @@ def draw_translucent_index(
 
 
 # ==============================================================================
-# DETECT TRAY INFERENCE ENGINE
+# MODEL HOLDER (thread-safe GPU inference, hot-swappable weights)
 # ==============================================================================
-class DetectTray:
-    """
-    High-capacity PPE Vision Inference Engine supporting dual-class (compliant & violation)
-    detection with translucent HUD metrics overlays, connection pooling, and single-row DB logging.
-    """
-
-    def __init__(self, model_path=None):
-        # 1. Device detection - utilizes NVIDIA GPU if available, else CPU
+class ModelHolder:
+    def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(f"Initializing DetectTray on device: {self.device}")
+        self.lock = threading.Lock()
+        self.model = None
+        self.model_id = None
+        self.path = None
 
-        # 2. Model resolution - prioritize best12classes.pt
-        chosen_model_path = resolve_model_path(model_path)
-        print(f"Loading YOLO weights from: {chosen_model_path}")
-        self.model = YOLO(chosen_model_path).to(self.device)
+    @property
+    def loaded(self):
+        return self.model is not None
 
-        # 3. Model class names extracted directly from trained model or data.yaml
-        if hasattr(self.model, "names") and isinstance(self.model.names, dict) and len(self.model.names) > 0:
-            self.model_names = self.model.names
-        else:
-            self.model_names = YAML_CLASS_NAMES
+    def load(self, path, model_id):
+        """Loads new weights next to the old ones, then swaps under the lock."""
+        log.info("Loading YOLO weights from %s (model id %s) on %s", path, model_id, self.device)
+        model = YOLO(str(path)).to(self.device)
+        with self.lock:
+            old = self.model
+            self.model, self.model_id, self.path = model, model_id, str(path)
+        del old
+        self._free_gpu()
+        names = getattr(model, "names", {}) or {}
+        log.info("Model ready with %d classes: %s", len(names), names)
 
-        print(f"Loaded class mapping ({len(self.model_names)} classes): {self.model_names}")
+    def unload(self):
+        with self.lock:
+            self.model, self.model_id, self.path = None, None, None
+        self._free_gpu()
 
-        # 4. Mutex lock for thread-safe serialized GPU inference across camera threads
-        self.model_lock = threading.Lock()
+    def _free_gpu(self):
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
-        # 5. Class-specific confidence thresholds matching deployment specs
-        self.class_thresholds = {
-            "no_helmet": 0.78,
-            "no_gloves": 0.80,
-            "no_glove": 0.80,
-            "no_goggles": 0.60,
-            "no_mask": 0.58,
-            "no_suit": 0.65,
-            "no_shoes": 0.80,
-            "helmet": 0.70,
-            "gloves": 0.70,
-            "goggles": 0.60,
-            "mask": 0.60,
-            "suit": 0.65,
-            "shoes": 0.70
-        }
-        self.default_threshold = 0.55
+    def predict(self, frame):
+        """[(class_name, conf, [x1, y1, x2, y2]), ...] at PREDICT_CONF. Serialized on the GPU."""
+        with self.lock:
+            if self.model is None:
+                return [], None
+            results = self.model.predict(frame, conf=PREDICT_CONF, verbose=False)
+            names = self.model.names
+            model_id = self.model_id
+        out = []
+        for result in results:
+            boxes = result.boxes
+            if boxes is None or len(boxes) == 0:
+                continue
+            for b, c, conf in zip(boxes.xyxy.tolist(), boxes.cls.tolist(), boxes.conf.tolist()):
+                out.append((names.get(int(c), str(int(c))), conf, b))
+        return out, model_id
 
-        # 6. Thread-safe alert cooldown tracker (1-hour cooldown per camera area)
+
+# ==============================================================================
+# CAMERA WORKER (one thread per camera, stoppable)
+# ==============================================================================
+class CameraWorker(threading.Thread):
+    """
+    Processes a single camera stream:
+    1. Staggers startup to eliminate thundering herd network and CPU spikes.
+    2. Uses CAP_PROP_BUFFERSIZE=1 and quick frame drain to eliminate packet drops.
+    3. Checks one frame every CHECK_INTERVAL seconds and hands it to the service.
+    4. Uses edge-triggered camera_health updates to avoid flooding the database.
+    """
+
+    def __init__(self, spec, service):
+        super().__init__(name=f"cam-{spec.id}", daemon=True)
+        self.spec = spec
+        self.service = service
+        self.stop_event = threading.Event()
+        # Pause and config reloads stop workers without marking the camera offline
+        self.mark_offline_on_exit = True
+
+    def stop(self, mark_offline):
+        self.mark_offline_on_exit = mark_offline
+        self.stop_event.set()
+
+    def _open(self):
+        cap = cv2.VideoCapture(self.spec.stream_url, cv2.CAP_FFMPEG)
+        if cap.isOpened():
+            # Enforce internal 1-frame buffer to eliminate buffer bloat and packet drops
+            cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        return cap
+
+    def run(self):
+        spec, pool = self.spec, self.service.pool
+        # Stagger camera startup to prevent concurrent RTSP connection bursts
+        if self.stop_event.wait(random.uniform(0.5, STARTUP_STAGGER)):
+            return
+        log.info("[%s] Starting stream. Required PPE: %s", spec.label, ", ".join(sorted(spec.required_items)))
+
+        cap = None
+        last_check = 0.0
+        try:
+            while not self.stop_event.is_set():
+                wait = CHECK_INTERVAL - (time.time() - last_check)
+                if wait > 0 and self.stop_event.wait(wait):
+                    break
+
+                if cap is None or not cap.isOpened():
+                    if cap is not None:
+                        cap.release()
+                    cap = self._open()
+                    if not cap.isOpened():
+                        update_camera_status(pool, spec, False)
+                        if self.stop_event.wait(5):
+                            break
+                        continue
+
+                # Quick frame drain (flush buffered frames to land on the current keyframe)
+                for _ in range(3):
+                    cap.grab()
+                ret, frame = cap.read()
+                if not ret or frame is None:
+                    log.warning("[%s] Dropped frame or disconnect. Reconnecting...", spec.label)
+                    update_camera_status(pool, spec, False)
+                    cap.release()
+                    cap = None
+                    if self.stop_event.wait(3):
+                        break
+                    continue
+
+                last_check = time.time()
+                update_camera_status(pool, spec, True)
+                try:
+                    self.service.process_frame(spec, frame)
+                except Exception as e:
+                    log.exception("[%s] Frame processing failed: %s", spec.label, e)
+        except Exception as e:
+            log.exception("Unexpected camera processing exception on %s: %s", spec.label, e)
+        finally:
+            if cap is not None:
+                cap.release()
+            if self.mark_offline_on_exit:
+                update_camera_status(pool, spec, False)
+            log.info("[%s] Stream released.", spec.label)
+
+
+# ==============================================================================
+# INFERENCE SERVICE (supervisor: config hot-reload, pause/resume, model swaps)
+# ==============================================================================
+class InferenceService:
+    def __init__(self, model_override=None):
+        self.pool = wc.DbPool(minconn=2, maxconn=20)
+        self.storage = wc.get_storage()
+        self.local_storage = wc.LocalStorage()
+        self.model = ModelHolder()
+        self.model_override = model_override
+        self.model_error = None
+
+        self.registry = ClassRegistry([])  # swapped atomically on reload
+        self.specs = {}
+        self.workers = {}
+        self.config_version = None
+        self.paused = False
+        self.pause_reason = None
+
         self.cooldown_tracker = defaultdict(float)
         self.cooldown_lock = threading.Lock()
+        self.recent_events = deque()
+        self.shutdown_event = threading.Event()
 
-        # Shutdown controller
-        self.running = True
+    # --- events -----------------------------------------------------------------
 
-    def should_record_event(self, production_house, area_type):
-        """Thread-safe 1-hour cooldown check to prevent event spamming in database."""
-        key = f"{production_house}_{area_type}"
-        current_time = time.time()
-        cooldown_period = 3600  # 1 hour in seconds
-
+    def should_record_event(self, spec):
+        """Thread-safe cooldown: one event per production house + area per EVENT_COOLDOWN."""
+        key = f"{spec.production_house}_{spec.area}"
+        now = time.time()
         with self.cooldown_lock:
-            last_sent_time = self.cooldown_tracker[key]
-            if current_time - last_sent_time >= cooldown_period:
-                self.cooldown_tracker[key] = current_time
+            if now - self.cooldown_tracker[key] >= EVENT_COOLDOWN:
+                self.cooldown_tracker[key] = now
+                self.recent_events.append(now)
                 return True
             return False
 
-    # Backwards compatibility alias
-    should_send_email = should_record_event
+    def events_last_hour(self):
+        cutoff = time.time() - 3600
+        with self.cooldown_lock:
+            while self.recent_events and self.recent_events[0] < cutoff:
+                self.recent_events.popleft()
+            return len(self.recent_events)
 
-    def process_camera(self, stream_data, plant, production_house, area_type,
-                       ip_address, ppe_list, non_uniform_scale=False):
-        """
-        Processes a single camera stream.
-        Optimized for 350+ cameras:
-        1. Staggers startup to eliminate thundering herd network and CPU spikes.
-        2. Uses CAP_PROP_BUFFERSIZE=1 and quick frame drain to eliminate packet drops.
-        3. Serializes GPU inference safely via self.model_lock.
-        4. Associates detections into people instances and counts violators.
-        5. Renders clean bounding boxes (green=compliant, red=violation) without
-           cluttering confidence percentage labels.
-        6. Dynamically positions translucent HUD overlay in an unoccupied corner
-           to ensure workers are never obscured.
-        7. Records EXACTLY ONE ROW per violation image to PostgreSQL using connection pooling.
-        8. Uses edge-triggered updates to prevent flooding DB with camera status queries.
-        """
-        # Stagger camera startup across 0.5-35s to prevent concurrent RTSP connection bursts
-        initial_stagger = random.uniform(0.5, 35.0)
-        time.sleep(initial_stagger)
+    def _store(self, key, data):
+        """Primary storage, falling back to local disk. Returns (stored_key_or_local_ref, is_local)."""
+        if self.storage.kind != "local":
+            try:
+                self.storage.put_bytes(key, data, "image/jpeg")
+                return key, False
+            except Exception as e:
+                log.error("S3 upload error for %s: %s (saved locally instead)", key, e)
+        self.local_storage.put_bytes(key, data, "image/jpeg")
+        return key, True
 
-        # Extract required base PPE items for this area
-        required_base_items = get_required_ppe_items(ppe_list)
-        required_display_items = [BASE_PPE_DISPLAY.get(b, b.capitalize()) for b in sorted(list(required_base_items))]
-        required_ppes_str = ", ".join(required_display_items)
+    def process_frame(self, spec, frame):
+        # Preprocessing to standardized 1920x1080 resolution
+        if spec.scale_up:
+            h_orig, w_orig = frame.shape[:2]
+            frame = cv2.resize(frame, (w_orig * 2, h_orig * 2))
+        frame = cv2.resize(frame, (FRAME_W, FRAME_H))
 
-        stream_link = stream_data.get('streamLink', '')
-        print(f"[{production_house} | {area_type}] Initializing camera stream: {stream_link}")
-        print(f"[{production_house} | {area_type}] Required PPEs in zone: {required_ppes_str}")
+        raw, model_id = self.model.predict(frame)
+        registry = self.registry  # one consistent snapshot for this frame
+        detections = classify_detections(raw, registry, spec.required_items)
+        used = [d for d in detections if d["used"]]
+        detected_violations = [d for d in used if d["is_violation"]]
+        detected_compliances = [d for d in used if not d["is_violation"]]
 
-        front = None
-        try:
-            front = cv2.VideoCapture(stream_link, cv2.CAP_FFMPEG)
-            if front.isOpened():
-                # Enforce internal 1-frame buffer to eliminate buffer bloat and packet drops
-                front.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-        except Exception as cv2_error:
-            print(f"Error creating VideoCapture for {stream_link}: {cv2_error}")
-            update_camera_status(plant, production_house, area_type, stream_link, False)
+        # If no violation detected, proceed to next interval
+        if not detected_violations:
             return
 
-        last_detection_time = 0.0
-        check_interval = 60.0  # Periodic check interval per camera in seconds
+        # Multi-person clustering to calculate total people and violating people
+        total_people, violating_people, _ = group_detections_by_person(used)
 
+        # Cooldown check: 1 event per camera area per hour
+        if not self.should_record_event(spec):
+            return
+
+        now = datetime.now()
+        # Clean frame for retraining: captured before any box or HUD is drawn
+        clean_jpeg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 95])[1].tobytes()
+
+        for d in detected_compliances:
+            frame = draw_aesthetic_box(frame, d["box"], is_violation=False)
+        for d in detected_violations:
+            frame = draw_aesthetic_box(frame, d["box"], is_violation=True)
+
+        frame = draw_translucent_index(
+            image=frame,
+            production_house=spec.production_house,
+            area_type=spec.area,
+            date_str=now.strftime("%Y-%m-%d"),
+            time_str=now.strftime("%H:%M:%S"),
+            required_base_items=spec.required_items,
+            detected_violations=detected_violations,
+            detected_compliances=detected_compliances,
+            total_people=total_people,
+            violating_people=violating_people,
+            all_boxes=[d["box"] for d in used],
+            ppe_display=registry.ppe_display,
+        )
+
+        im_id = event_image_id(now, spec.production_house, spec.area)
+        annotated_key, raw_key = event_image_keys(now, im_id)
+        annotated_jpeg = cv2.imencode(".jpg", frame)[1].tobytes()
+
+        stored_key, annotated_local = self._store(annotated_key, annotated_jpeg)
+        image_url = local_image_url(stored_key) if annotated_local else public_image_url(PUBLIC_IMAGE_BASE, BUCKET_NAME, stored_key)
+        raw_stored, raw_local = self._store(raw_key, clean_jpeg)
+        raw_image_key = local_image_url(raw_stored) if raw_local else raw_stored
+
+        summary = summarize_event(used)
+        required_ppes_str = ", ".join(registry.display_for(k) for k in sorted(spec.required_items))
+        log.info(
+            "[VIOLATION EVENT] %s -> Violations: [%s] | Compliances: [%s] | People: %s | Violators: %s",
+            spec.label, summary["violations_str"], summary["compliance_str"], total_people, violating_people,
+        )
+
+        insert_event_record(
+            self.pool, spec, now, image_url, summary, total_people, violating_people,
+            required_ppes_str, raw_image_key, detections_payload(detections), model_id,
+        )
+
+    # --- supervision --------------------------------------------------------------
+
+    def _ensure_model(self, state):
+        want_id = None if self.model_override else state.active_model_id
+        if self.model.loaded and self.model.model_id == want_id and (want_id is not None or self.model_override):
+            return True
         try:
-            while self.running:
-                now = time.time()
-                time_since_last = now - last_detection_time
-
-                if time_since_last < check_interval:
-                    sleep_time = min(1.0, check_interval - time_since_last)
-                    time.sleep(sleep_time)
-                    continue
-
-                if front is None or not front.isOpened():
-                    print(f"Reconnecting stream for {production_house}_{area_type}...")
-                    if front:
-                        front.release()
-                    time.sleep(3)
-                    front = cv2.VideoCapture(stream_link, cv2.CAP_FFMPEG)
-                    if front.isOpened():
-                        front.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                    else:
-                        update_camera_status(plant, production_house, area_type, stream_link, False)
-                        time.sleep(5)
-                        continue
-
-                # Quick frame drain (flush buffered frames to land on current real-time keyframe)
-                for _ in range(3):
-                    front.grab()
-
-                ret, frame = front.read()
-                if not ret or frame is None:
-                    print(f"[{production_house}_{area_type}] Dropped frame or disconnect. Reconnecting...")
-                    update_camera_status(plant, production_house, area_type, stream_link, False)
-                    front.release()
-                    time.sleep(3)
-                    front = cv2.VideoCapture(stream_link, cv2.CAP_FFMPEG)
-                    if front.isOpened():
-                        front.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                    continue
-
-                last_detection_time = time.time()
-                update_camera_status(plant, production_house, area_type, stream_link, True)
-
-                # Preprocessing to standardized 1920x1080 resolution
-                if non_uniform_scale:
-                    h_orig, w_orig = frame.shape[:2]
-                    frame = cv2.resize(frame, (w_orig * 2, h_orig * 2))
-
-                frame = cv2.resize(frame, (1920, 1080))
-
-                # Thread-safe GPU Inference
-                with self.model_lock:
-                    predictions = self.model.predict(frame, conf=0.45, verbose=False)
-
-                raw_detections = []
-
-                # ---- Collect detections using exact class mappings ----
-                for result in predictions:
-                    boxes = result.boxes
-                    if boxes is None or len(boxes) == 0:
-                        continue
-                    xyxy = boxes.xyxy
-                    classes = boxes.cls
-                    confidences = boxes.conf
-
-                    for b, c, conf in zip(xyxy, classes, confidences):
-                        cid = int(c)
-                        raw_name = self.model_names.get(cid, str(cid))
-                        norm_name = normalize_class_name(raw_name)
-                        meta = CLASS_METADATA.get(norm_name)
-
-                        if meta:
-                            is_viol = meta["is_violation"]
-                            base_item = meta["base_item"]
-                            display_name = meta["display"]
-                        else:
-                            is_viol = is_violation_class(raw_name)
-                            base_item = get_base_ppe_item(raw_name)
-                            display_name = raw_name
-
-                        conf_score = float(conf)
-                        thresh = self.class_thresholds.get(norm_name, self.class_thresholds.get(base_item, self.default_threshold))
-
-                        # Filter: must meet class confidence threshold and be a required PPE in this area
-                        if conf_score >= thresh and base_item in required_base_items:
-                            b_coords = [round(float(x)) for x in b.tolist()]
-                            cx = (b_coords[0] + b_coords[2]) / 2
-                            cy = (b_coords[1] + b_coords[3]) / 2
-                            raw_detections.append({
-                                'box': b_coords,
-                                'center': (cx, cy),
-                                'class_name': norm_name,
-                                'display_name': display_name,
-                                'base_item': base_item,
-                                'is_violation': is_viol,
-                                'conf': conf_score
-                            })
-
-                detected_violations = [d for d in raw_detections if d['is_violation']]
-                detected_compliances = [d for d in raw_detections if not d['is_violation']]
-
-                # If no violation detected, proceed to next interval
-                if not detected_violations:
-                    continue
-
-                # Multi-person clustering to calculate total people and violating people
-                total_people, violating_people, _ = group_detections_by_person(raw_detections)
-
-                # Cooldown check: 1 event per camera area per hour
-                if not self.should_record_event(production_house, area_type):
-                    continue
-
-                # Render clean, aesthetic bounding boxes (no cluttering percentage text):
-                # 1. Compliant detections in vibrant Emerald Green
-                for d in detected_compliances:
-                    frame = draw_aesthetic_box(frame, d['box'], is_violation=False)
-
-                # 2. Violation detections in alert Crimson Red with focus corner brackets
-                for d in detected_violations:
-                    frame = draw_aesthetic_box(frame, d['box'], is_violation=True)
-
-                # 3. Translucent HUD index card overlay placed in unoccupied corner
-                date1 = datetime.now().strftime("%Y-%m-%d")
-                time1 = datetime.now().strftime("%H:%M:%S")
-                time_code = datetime.now().strftime("%H%M%S")
-                all_boxes = [d['box'] for d in raw_detections]
-
-                frame = draw_translucent_index(
-                    image=frame,
-                    production_house=production_house,
-                    area_type=area_type,
-                    date_str=date1,
-                    time_str=time1,
-                    required_base_items=required_base_items,
-                    detected_violations=detected_violations,
-                    detected_compliances=detected_compliances,
-                    total_people=total_people,
-                    violating_people=violating_people,
-                    all_boxes=all_boxes
-                )
-
-                # Save labeled image
-                labeled_image = frame.copy()
-                im_id = f"{date1}{time_code}_{production_house}_{area_type}"
-
-                image_data = cv2.imencode(".jpg", labeled_image)[1].tobytes()
-                s3_key = save_image_to_s3(bucket_name, f"{im_id}.jpg", image_data)
-
-                if bucket_name:
-                    encoded_key = quote_plus(f"{datetime.now().strftime('%B').lower()}/{im_id}.jpg")
-                    image_url = f"https://ppes-siil.solargroup.com:9000/{bucket_name}/{encoded_key}"
-                else:
-                    image_url = f"local://saved_violations/{im_id}.jpg"
-
-                # Prepare summary strings for single-row logging
-                unique_violations = sorted(list({d['display_name'] for d in detected_violations}))
-                unique_compliances = sorted(list({d['display_name'] for d in detected_compliances}))
-                violations_str = ", ".join(unique_violations)
-                compliance_str = ", ".join(unique_compliances) if unique_compliances else "None"
-
-                print(f"[VIOLATION EVENT] {production_house} | {area_type} -> Violations: [{violations_str}] | Compliances: [{compliance_str}] | People: {total_people} | Violators: {violating_people}")
-                print(f"Image URL: {image_url}")
-
-                # Database insertion: Exactly ONE ROW per image (via thread-safe connection pool)
-                insert_single_violation_record(
-                    production_house=production_house,
-                    ip_address=ip_address,
-                    date1=date1,
-                    time1=time1,
-                    image_url=image_url,
-                    area_type=area_type,
-                    violations_str=violations_str,
-                    compliance_str=compliance_str,
-                    violation_count=len(detected_violations),
-                    compliance_count=len(detected_compliances),
-                    people_count=total_people,
-                    violator_count=violating_people,
-                    required_ppes_str=required_ppes_str
-                )
-
+            if self.model_override:
+                path = wc.resolve_repo_path(self.model_override)
+            elif want_id is None:
+                raise RuntimeError("runtime_state.active_model_id is not set")
+            else:
+                path = load_model_path(self.pool, want_id)
+            if not path.exists():
+                raise FileNotFoundError(f"Weights not found: {path}")
+            self.model.load(path, want_id)
+            self.model_error = None
+            return True
         except Exception as e:
-            print(f"Unexpected camera processing exception on {production_house}_{area_type}: {e}")
-        finally:
-            update_camera_status(plant, production_house, area_type, stream_link, False)
-            if front:
-                front.release()
-            print(f"[{production_house} | {area_type}] Stream released and closed.")
+            self.model_error = str(e)
+            log.error("Model load failed: %s", e)
+            return self.model.loaded  # keep serving the previous weights if we have them
 
-    def profile_process_camera(self, stream_data, plant, production_house, area_type, ip_address, ppe_list):
-        """Optional profiling wrapper for individual camera execution."""
-        pr = cProfile.Profile()
-        pr.enable()
-        try:
-            self.process_camera(stream_data, plant, production_house, area_type, ip_address, ppe_list)
-        finally:
-            pr.disable()
-            s = StringIO()
-            sortby = 'cumulative'
-            ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-            ps.print_stats()
-            print(s.getvalue())
+    def _stop_workers(self, ids, mark_offline, forget_health=False):
+        workers = [self.workers.pop(cid) for cid in ids if cid in self.workers]
+        for w in workers:
+            w.stop(mark_offline)
+        deadline = time.time() + 15
+        for w in workers:
+            w.join(timeout=max(0.0, deadline - time.time()))
+            if forget_health:
+                forget_camera_health(self.pool, w.spec.health_id)
+
+    def _start_worker(self, spec):
+        worker = CameraWorker(spec, self)
+        self.workers[spec.id] = worker
+        worker.start()
+
+    def _reconcile(self, state):
+        specs, registry = load_config(self.pool)
+        self.registry = registry
+        start, stop, restart = diff_camera_specs({cid: w.spec for cid, w in self.workers.items()}, specs)
+
+        # Removed/disabled cameras disappear from camera_health; renamed ones get a new row
+        self._stop_workers(stop, mark_offline=False, forget_health=True)
+        renamed = [cid for cid in restart if self.workers[cid].spec.health_id != specs[cid].health_id]
+        self._stop_workers(renamed, mark_offline=False, forget_health=True)
+        self._stop_workers([cid for cid in restart if cid not in renamed], mark_offline=False)
+
+        for cid in start + restart:
+            self._start_worker(specs[cid])
+
+        self.specs = specs
+        self.config_version = state.config_version
+        if start or stop or restart:
+            log.info(
+                "Config v%s applied: %d cameras (+%d started, -%d stopped, %d restarted), %d classes.",
+                state.config_version, len(specs), len(start), len(stop), len(restart), len(registry),
+            )
+
+    def _enter_pause(self, reason):
+        log.warning("Inference paused: %s. Releasing all streams and the GPU.", reason or "no reason given")
+        self._stop_workers(list(self.workers), mark_offline=False)
+        self.model.unload()
+        self.paused = True
+        self.pause_reason = reason
+        # Forces a full reconcile on resume, even if the first resume tick fails to load the model
+        self.config_version = None
+
+    def _heartbeat(self, state_name):
+        wc.heartbeat(self.pool, "inference", {
+            "state": state_name,
+            "pause_reason": self.pause_reason if self.paused else None,
+            "cameras_configured": len(self.specs),
+            "cameras_running": sum(1 for w in self.workers.values() if w.is_alive()),
+            "model_id": self.model.model_id,
+            "model_error": self.model_error,
+            "config_version": self.config_version,
+            "events_last_hour": self.events_last_hour(),
+            "device": str(self.model.device),
+        })
+
+    def tick(self):
+        state = wc.read_runtime_state(self.pool)
+        if state is None:
+            raise RuntimeError("runtime_state is missing; run `alembic upgrade head` in backend/")
+
+        if state.inference_paused:
+            if not self.paused:
+                self._enter_pause(state.pause_reason)
+            self.pause_reason = state.pause_reason
+            self._heartbeat("paused")
+            return
+
+        if self.paused:
+            log.info("Inference resumed.")
+            self.paused = False
+            self.pause_reason = None
+
+        if not self._ensure_model(state):
+            self._heartbeat("starting")
+            return
+        if state.config_version != self.config_version:
+            self._reconcile(state)
+        self._heartbeat("running")
+
+    def run(self):
+        self._heartbeat("starting")
+        while not self.shutdown_event.is_set():
+            try:
+                self.tick()
+            except Exception as e:
+                log.exception("Supervisor tick failed: %s", e)
+            self.shutdown_event.wait(CONFIG_POLL)
+
+    def shutdown(self):
+        log.info("Shutting down PPE inference service cleanly...")
+        self.shutdown_event.set()
+        # Like before: a stopped service shows its cameras as offline
+        self._stop_workers(list(self.workers), mark_offline=True)
+        self._heartbeat("stopped")
+        self.pool.close()
+        log.info("All camera workers stopped and database pool closed.")
 
 
 # ==============================================================================
-# CLI ARGUMENT PARSER & SERVICE RUNNER
+# CLI
 # ==============================================================================
 def parse_arguments():
-    # Detect default camera configuration file
-    default_camera_file = "camera_list_v4.json"
-    if not os.path.exists(default_camera_file) and not (Path(dir_path) / default_camera_file).exists():
-        default_camera_file = "camera_list_v4_newplants.json"
-
-    parser = argparse.ArgumentParser(description="PPE Multi-Camera Vision Inference Service")
-    parser.add_argument(
-        "--cameras", "-c",
-        type=str,
-        default=default_camera_file,
-        help="Path to camera_list JSON configuration file"
+    parser = argparse.ArgumentParser(
+        description="PPE multi-camera inference service. Cameras, PPE rules, class thresholds and the "
+                    "active model come from the database (manage them in the portal)."
     )
     parser.add_argument(
         "--model", "-m",
         type=str,
-        default=DEFAULT_MODEL_PATH,
-        help="Path to YOLO trained weights (.pt)"
-    )
-    parser.add_argument(
-        "--workers", "-w",
-        type=int,
         default=None,
-        help="Worker thread count (defaults to camera count, max 250)"
+        help="Debug override: use these weights instead of the active model_versions row",
     )
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = parse_arguments()
+    service = InferenceService(model_override=args.model)
 
-    # 1. Initialize PostgreSQL Connection Pool
-    init_db_pool()
+    def _handle_signal(signum, _frame):
+        log.info("Received signal %s", signum)
+        service.shutdown_event.set()
 
-    # 2. Run Database Schema Migration ONCE at startup (prevents DDL lock contention)
-    with get_db_connection() as setup_con:
-        if setup_con:
-            try:
-                with setup_con.cursor() as setup_cur:
-                    create_table_if_not_exists(setup_cur)
-                setup_con.commit()
-                print("Database table schema validated successfully.")
-            except Exception as e:
-                print(f"Schema setup note: {e}")
+    signal.signal(signal.SIGTERM, _handle_signal)
+    signal.signal(signal.SIGINT, _handle_signal)
 
-    # 3. Locate camera list configuration file
-    camera_file = args.cameras
-    if not os.path.exists(camera_file):
-        script_dir_camera = Path(dir_path) / camera_file
-        if script_dir_camera.exists():
-            camera_file = str(script_dir_camera)
-        else:
-            print(f"Notice: Camera list '{camera_file}' not found.")
-            print(f"Creating a sample camera_list_v4.json template in {dir_path}...")
-            sample_config = {
-                "Plant1": {
-                    "PB-1": {
-                        "SEIVING": {
-                            "streamLink": "rtsp://admin:admin123@192.168.1.100:554/stream1",
-                            "ppeList": ["no_helmet", "no_glove", "no_goggles", "no_mask", "no_suit", "no_shoes"]
-                        }
-                    }
-                }
-            }
-            with open(camera_file, "w") as f:
-                json.dump(sample_config, f, indent=4)
-            print(f"Template created at {camera_file}. Edit with your actual camera RTSP feeds.")
-
-    print(f"Loading camera device configurations from: {camera_file}")
-    with open(camera_file, "r") as f:
-        devices = json.load(f)
-
-    # 4. Initialize detection engine (loads model once on GPU)
-    tray_detector = DetectTray(model_path=args.model)
-
-    # 5. Flatten camera list into individual tasks
-    camera_tasks = []
-    for plant, plantData in devices.items():
-        if not isinstance(plantData, dict):
-            continue
-        for productionHouse, productionHouseData in plantData.items():
-            if not isinstance(productionHouseData, dict):
-                continue
-            for areaType, areaData in productionHouseData.items():
-                if not isinstance(areaData, dict):
-                    continue
-                stream_link = areaData.get('streamLink', '')
-                if not stream_link:
-                    continue
-                after_at = stream_link.split('@')[1] if '@' in stream_link else stream_link
-                ip_address = after_at.split(':')[0] if ':' in after_at else "0.0.0.0"
-                ppe_list = areaData.get("ppeList", [
-                    "no_helmet", "no_glove", "no_goggles", "no_mask", "no_suit", "no_shoes"
-                ])
-
-                camera_tasks.append((areaData, plant, productionHouse, areaType, ip_address, ppe_list))
-
-    total_cameras = len(camera_tasks)
-    print(f"Total camera endpoints registered: {total_cameras}")
-
-    # Worker allocation optimized for Xeon Gold 6326 (caps at 250 threads to avoid OS scheduler thrashing)
-    if args.workers:
-        max_workers = args.workers
-    else:
-        max_workers = max(16, min(250, total_cameras)) if total_cameras > 0 else 32
-
-    print(f"Starting ThreadPoolExecutor with {max_workers} worker threads for {total_cameras} cameras.")
-    print("Camera check intervals staggered across 60 seconds with 1-frame buffers to prevent network packet drops.")
-
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [
-            executor.submit(
-                tray_detector.process_camera,
-                areaData, plant, productionHouse, areaType, ip_address, ppe_list
-            )
-            for areaData, plant, productionHouse, areaType, ip_address, ppe_list in camera_tasks
-        ]
-
-        try:
-            # Keep main thread alive while workers run
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            print("\nShutting down PPE inference service cleanly...")
-            tray_detector.running = False
-            executor.shutdown(wait=False)
-            if db_pool and not getattr(db_pool, 'closed', False):
-                db_pool.closeall()
-            print("All camera workers stopped and database pool closed.")
+    supervisor = threading.Thread(target=service.run, name="supervisor", daemon=True)
+    supervisor.start()
+    try:
+        while not service.shutdown_event.is_set():
+            service.shutdown_event.wait(1)
+    finally:
+        supervisor.join(timeout=5)
+        service.shutdown()

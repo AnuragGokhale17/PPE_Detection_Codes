@@ -1,0 +1,14 @@
+[Unit]
+Description=PPE daily camera health digest (10:00, recipients from the database)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=administrator
+WorkingDirectory=/home/administrator/PPEsDetection
+ExecStart=/home/administrator/PPEsDetection/venv/bin/python camera_status_mail.py
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

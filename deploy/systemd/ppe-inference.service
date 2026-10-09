@@ -1,0 +1,17 @@
+[Unit]
+Description=PPE vision inference (cameras and classes from the database)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=administrator
+WorkingDirectory=/home/administrator/PPEsDetection
+ExecStart=/home/administrator/PPEsDetection/venv/bin/python inference.py
+# SIGTERM releases every stream and marks cameras offline, like before
+KillSignal=SIGTERM
+TimeoutStopSec=60
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

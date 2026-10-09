@@ -1,0 +1,4 @@
+# Optional: model-assisted labelling ("Suggest boxes") in the API process.
+# Install on the GPU server only. Runs on CPU by default (PRELABEL_DEVICE).
+-r requirements.txt
+ultralytics>=8.3

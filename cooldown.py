@@ -9,8 +9,9 @@ from email.mime.image import MIMEImage
 import requests
 import socket
 import os
-import smtplib
 from dotenv import load_dotenv
+
+from worker_common import LocalStorage
 
 load_dotenv()
 
@@ -32,222 +33,10 @@ DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")
 DB_NAME = os.getenv("DB_NAME")
-# ### NEW ###: Define default recipients in a central place
-DEFAULT_TO_RECIPIENTS = [""]
-DEFAULT_CC_RECIPIENTS = [""]
+DB_PORT = os.getenv("DB_PORT", "5432")
+# Recipients now live in the alert_recipients table (channel 'violation') and are
+# managed per production house in the portal: Configuration -> Alert recipients.
 
-# ### NEW ###: Recipient mapping is clearer
-production_house_recipients = {
-    "BULK": {
-        "to": ["vaibhav.indurkar@solargroup.com","incharge.cob@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "CBH3": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "CBH4": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "CBH5": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "CBH6": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "CBH7": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "COB": {
-       "to": ["vaibhav.indurkar@solargroup.com","incharge.cob@solargroup.com"],
-       "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "DF-01": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "DF02": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "DF03": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "DISTILLATION": {
-        "to": ["sandip.bhendarkar@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "GB": {
-        "to": ["sandip.bhendarkar@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "GB-02": {
-        "to": ["sandip.bhendarkar@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "GB-03": {
-        "to": ["sandip.bhendarkar@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "HRCPCH-01": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "HRCPCH-02": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "MEEP": {
-        "to": ["sandesh.sakhare@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-01": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-10": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-02": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-03": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-04": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-05": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-06": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-07": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PD-08": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-01": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-02": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-03": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-04": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-05": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-06": {
-        "to": ["sandip.bhendarkar@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-07": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-09": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-08": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-10": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-11": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-12": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-14": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","sachin.pokale@solargroup.com","shift.inchargeacce@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-15": {
-        "to": ["sandip.bhendarkar@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-16": {
-        "to": ["avinash.kambale@solargroup.com","sai.viswanathan@solargroup.com","sarvesh.tripathi@solargroup.com","umesh.kubade@solargroup.com","shift.incharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-18": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","manish.garade@solargroup.com","suchit.bakade@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-19": {
-        "to": ["sandip.bhendarkar@solargroup.com","atish.padole@solargroup.com","suresh.chikte@solargroup.com","hilltop.shiftincharge@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "SL-03": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "SL-04": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "SL-05": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "SMO": {
-       "to": ["vaibhav.indurkar@solargroup.com","incharge.cob@solargroup.com"],
-       "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "SN-01": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","sn1@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "SN-02": {
-        "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","sn1@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "SN-03": {
-       "to": ["pawan.hiwase@solargroup.com","yogesh.mishra@solargroup.com","prakash.baid@solargroup.com","sn1@solargroup.com","shift.inchargedet@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-20": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","manish.garade@solargroup.com","suchit.bakade@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    "PP-21": {
-        "to": ["pankaj.patil@solargroup.com","pawan.hiwase@solargroup.com","manish.garade@solargroup.com","suchit.bakade@solargroup.com"],
-        "cc": ["sujay.kumar@solargroup.com", "sandip.bhendarkar@solargroup.com", "jay.jogi@solargroup.com"]
-    },
-    # Add more production houses and corresponding recipients as needed
-}
 
 class CooldownTracker:
     def __init__(self):
@@ -274,7 +63,7 @@ def connect_to_db():
             database=DB_NAME,
             user=DB_USER,
             password=DB_PASS,
-            port='5432'
+            port=DB_PORT
         )
         # No need for autocommit with simple INSERTs if you manage the transaction
         cur = con.cursor()
@@ -315,9 +104,11 @@ def fetch_recent_violations(limit=20):
         from psycopg2.extras import RealDictCursor
         cur = con.cursor(cursor_factory=RealDictCursor)
 
+        # Events a reviewer marked as false positive (violation = false) are never emailed
         cur.execute("""
-            SELECT class1, production_house, camera_unit, date1, time1, image_url, area
+            SELECT id, camera_id, class1, production_house, camera_unit, date1, time1, image_url, area
             FROM ppes
+            WHERE violation IS NOT FALSE
             ORDER BY id DESC
             LIMIT %s;
         """, (limit,))
@@ -330,15 +121,55 @@ def fetch_recent_violations(limit=20):
         if con:
             con.close()
 
+def fetch_recipients(camera_id, production_house):
+    """TO / CC / BCC lists for a production house from alert_recipients (channel 'violation').
+    The event's camera decides the production house; older rows without camera_id match by name."""
+    con, cur = connect_to_db()
+    try:
+        cur.execute("""
+            SELECT ar.email, ar.kind
+            FROM alert_recipients ar
+            WHERE ar.channel = 'violation'
+              AND ar.production_house_id = COALESCE(
+                    (SELECT c.production_house_id FROM cameras c WHERE c.id = %s),
+                    (SELECT ph.id FROM production_houses ph WHERE ph.name = %s ORDER BY ph.id LIMIT 1))
+            ORDER BY ar.id;
+        """, (camera_id, production_house))
+        recipients = {"to": [], "cc": [], "bcc": []}
+        for email, kind in cur.fetchall():
+            recipients.setdefault(kind, []).append(email)
+        return recipients["to"], recipients["cc"], recipients["bcc"]
+    finally:
+        con.close()
+
+def load_image_bytes(image_url):
+    """Evidence image for the email: MinIO URL, or a local:// fallback written by inference.py."""
+    if image_url.startswith("local://") or not image_url.startswith("http"):
+        key = image_url.replace("local://", "", 1)
+        local = LocalStorage()
+        if local.exists(key):
+            return local.get_bytes(key)
+        # Pre-v2 fallback layout: saved_violations/<file> next to the scripts
+        local_path = key
+        if not os.path.exists(local_path):
+            script_dir = os.path.dirname(os.path.realpath(__file__))
+            local_path = os.path.join(script_dir, local_path)
+        with open(local_path, "rb") as f:
+            return f.read()
+    response = requests.get(image_url, timeout=20, verify=False)
+    response.raise_for_status()  # Will raise an HTTPError for bad responses (4xx or 5xx)
+    return response.content
+
 # ### CHANGED ###: Major overhaul of this function for better formatting and image embedding
-def send_email(subject, violation_details, receivers, cc_receivers=None, max_retries=3, retry_delay=10):
+def send_email(subject, violation_details, receivers, cc_receivers=None, bcc_receivers=None, max_retries=3, retry_delay=10):
     sender_email = os.getenv("SMTP_EMAIL")
     smtp_server = os.getenv("SMTP_SERVER")
     smtp_port = os.getenv("SMTP_PORT")
     smtp_username = os.getenv("SMTP_USERNAME")
     smtp_password = os.getenv("SMTP_PASSWORD")
 
-    all_receivers = receivers + (cc_receivers or [])
+    # BCC recipients are only in the SMTP envelope, never in the headers
+    all_receivers = receivers + (cc_receivers or []) + (bcc_receivers or [])
     if not all_receivers:
         logger.warning("No recipients specified. Aborting email send.")
         return
@@ -410,20 +241,8 @@ def send_email(subject, violation_details, receivers, cc_receivers=None, max_ret
         return # Or send email without image
 
     try:
-        if image_url.startswith("local://") or not image_url.startswith("http"):
-            # Handle local file path fallback
-            local_path = image_url.replace("local://", "")
-            if not os.path.exists(local_path):
-                # Check relative to script directory
-                script_dir = os.path.dirname(os.path.realpath(__file__))
-                local_path = os.path.join(script_dir, local_path)
-            with open(local_path, "rb") as f:
-                image_data = f.read()
-        else:
-            response = requests.get(image_url, timeout=20, verify=False)
-            response.raise_for_status()  # Will raise an HTTPError for bad responses (4xx or 5xx)
-            image_data = response.content
-        
+        image_data = load_image_bytes(image_url)
+
         # ### NEW ###: Create MIMEImage and set Content-ID
         # This is the crucial step for embedding. The 'cid' in the <img> tag
         # must match the name in the <...> brackets here.
@@ -472,21 +291,25 @@ if __name__ == '__main__':
                 
                 # Check cooldown period
                 if cooldown_tracker.should_send_email(violation['production_house'], violation['area']):
-                    
-                    # ### CHANGED ###: Cleaner recipient handling
+
+                    # Recipients configured for this production house in the portal
                     ph_key = violation['production_house']
-                    recipients_info = production_house_recipients.get(ph_key, {})
-                    
-                    to_list = recipients_info.get("to", DEFAULT_TO_RECIPIENTS)
-                    cc_list = recipients_info.get("cc", DEFAULT_CC_RECIPIENTS)
+                    to_list, cc_list, bcc_list = fetch_recipients(violation.get('camera_id'), ph_key)
+                    if not to_list:
+                        logger.warning(
+                            f"No alert recipients configured for production house '{ph_key}'. "
+                            f"Add them in the portal (Configuration -> Alert recipients). Skipping email."
+                        )
+                        processed_violations.add(violation_key)
+                        continue
 
                     # Insert record into the database using the lists
                     insert_email_record(violation['class1'], ph_key, violation['area'], to_list, cc_list)
 
                     # Send email with all violation details
                     subject = f"PPE Violation Detected: {violation['class1']} in {ph_key}, {violation['area']}"
-                    send_email(subject, violation, to_list, cc_list)
-                    
+                    send_email(subject, violation, to_list, cc_list, bcc_list)
+
                     # Mark as processed for this session
                     processed_violations.add(violation_key)
 

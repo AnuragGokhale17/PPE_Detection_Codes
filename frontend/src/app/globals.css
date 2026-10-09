@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Solar Group Smart Factory design tokens (see SKILL.md at the repo root)
+   Red is the identity, blue is the interface, dark grey is the workhorse.
+   ========================================================================== */
+:root {
+  --canvas: #f3f4f5;
+  --surface: #ffffff;
+  --surface-2: #fafbfb;
+  --surface-3: #f1f2f4;
+  --surface-sunken: #eef0f2;
+
+  --ink: #212529;
+  --ink-2: #464c53;
+  --ink-3: #707070;
+  --line: #e6e8ea;
+  --line-strong: #d1d5db;
+
+  --brand-500: #ed1c24;
+  --brand-600: #d31017;
+
+  --accent-50: #f0f7fc;
+  --accent-100: #e0f0f9;
+  --accent-200: #c7e0f3;
+  --accent-600: #1f3f80;
+  --accent-700: #1a2d5e;
+
+  --data: #4a5157;
+
+  --ok: #0a6c40;
+  --ok-surface: #eefaf3;
+  --ok-line: #a8e6c4;
+  --warn: #a85908;
+  --warn-surface: #fff9ec;
+  --warn-line: #fbdd9a;
+  --critical: #b42318;
+  --critical-surface: #fdf3f2;
+  --critical-line: #f6cac6;
+
+  --p-saf: #2f8f4e;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-ink: 0 4px 12px rgba(33, 37, 41, 0.2);
+  --shadow-brand: 0 4px 14px rgba(237, 28, 36, 0.25);
+}
+
+@theme inline {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-accent-50: var(--accent-50);
+  --color-accent-100: var(--accent-100);
+  --color-accent-200: var(--accent-200);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+  --color-data: var(--data);
+  --color-ok: var(--ok);
+  --color-ok-surface: var(--ok-surface);
+  --color-ok-line: var(--ok-line);
+  --color-warn: var(--warn);
+  --color-warn-surface: var(--warn-surface);
+  --color-warn-line: var(--warn-line);
+  --color-critical: var(--critical);
+  --color-critical-surface: var(--critical-surface);
+  --color-critical-line: var(--critical-line);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+}
+
+html,
+body {
+  background-color: var(--canvas);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  /* 22px engineering grid at 2.8% */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgba(33, 37, 41, 0.028) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(33, 37, 41, 0.028) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .panel {
+    @apply rounded-lg border border-line bg-surface shadow-sm;
+  }
+
+  .panel-raised {
+    @apply rounded-lg border border-line bg-surface shadow-md;
+  }
+
+  /* 2px Solar Red structural cap: one of the three places red is allowed */
+  .panel-brand {
+    position: relative;
+    overflow: hidden;
+  }
+  .panel-brand::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--brand-600), var(--brand-500));
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-medium text-ink-3;
+  }
+  .eyebrow-accent {
+    @apply inline-flex items-center gap-2 text-[11px] font-bold text-accent-700;
+  }
+  .eyebrow-accent::before {
+    content: "";
+    width: 14px;
+    height: 2px;
+    background: var(--brand-500);
+  }
+
+  .label {
+    @apply mb-1.5 block text-[13px] font-medium text-ink-2;
+  }
+
+  .input {
+    @apply h-10 w-full rounded-md border border-line bg-surface px-3 text-sm text-ink outline-none transition;
+    @apply placeholder:text-ink-3 hover:border-line-strong;
+    @apply focus:border-accent-600 focus:ring-3 focus:ring-accent-200;
+    @apply disabled:cursor-not-allowed disabled:bg-surface-3;
+  }
+
+  .btn {
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded-md border border-line bg-surface px-4 text-[13px] font-bold text-ink;
+    @apply transition select-none hover:bg-surface-2 active:scale-[0.975];
+    @apply focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-accent-200;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+  }
+  /* Max one per screen */
+  .btn-primary {
+    @apply border-brand-600 bg-brand-600 text-white hover:bg-brand-500;
+    box-shadow: var(--shadow-brand);
+  }
+  .btn-ink {
+    @apply border-ink bg-ink text-white hover:bg-ink-2;
+    box-shadow: var(--shadow-ink);
+  }
+  .btn-outline {
+    @apply border-accent-600 bg-transparent text-accent-700 hover:bg-accent-50;
+  }
+  .btn-quiet {
+    @apply border-transparent bg-transparent text-ink-2 hover:bg-surface-3;
+  }
+  .btn-danger {
+    @apply border-critical-line bg-critical-surface text-critical hover:border-critical;
+  }
+  .btn-sm {
+    @apply h-8 px-3 text-xs;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap;
+  }
+  .pill-ok {
+    @apply border-ok-line bg-ok-surface text-ok;
+  }
+  .pill-warn {
+    @apply border-warn-line bg-warn-surface text-warn;
+  }
+  .pill-critical {
+    @apply border-critical-line bg-critical-surface text-critical;
+  }
+  .pill-info {
+    @apply border-accent-100 bg-accent-50 text-accent-700;
+  }
+  .pill-quiet {
+    @apply border-line bg-surface-3 text-ink-2;
+  }
+
+  .rule-head {
+    @apply flex items-center gap-3 text-sm font-bold text-ink;
+  }
+  .rule-head::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .live-dot {
+    @apply inline-block size-2 rounded-full bg-ok;
+    box-shadow: 0 0 0 3px var(--ok-surface);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
